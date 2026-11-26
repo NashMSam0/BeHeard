@@ -179,3 +179,8 @@ BEHEARD_DATA_DIR places private credentials and SQLite in /var/data/beheard/priv
 RENDER_EXTERNAL_HOSTNAME allows the generated host and enables Secure session cookies. Add custom domains using BEHEARD_DOMAINS, separated by commas. Render handles HTTPS. Production uses one Gunicorn worker and one request thread to serialize filesystem edits. The private database is created afresh on Render; the local founder password is never uploaded.
 
 Back up the private database using SQLite's backup API and copy the persistent public folder together. Store backups outside this disk and test restoring them. Credentials remain outside Git.
+
+
+### Free Render preview
+
+The current render.yaml uses the free web service plan and /tmp/beheard, without a paid disk. SQLite, founder credentials and uploaded or edited content on this preview are temporary and can disappear when the instance restarts or redeploys. The public site starts from the source-controlled pages. The local founder password is excluded, so cloud sign-in remains unconfigured. Use the local dashboard for durable editing until persistent hosting or an external datastore is configured. Free instances can sleep after idle periods. This preview incurs no paid service or disk provisioned by this configuration.
