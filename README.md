@@ -184,3 +184,18 @@ Back up the private database using SQLite's backup API and copy the persistent p
 ### Free Render preview
 
 The current render.yaml uses the free web service plan and /tmp/beheard, without a paid disk. SQLite, founder credentials and uploaded or edited content on this preview are temporary and can disappear when the instance restarts or redeploys. The public site starts from the source-controlled pages. The local founder password is excluded, so cloud sign-in remains unconfigured. Use the local dashboard for durable editing until persistent hosting or an external datastore is configured. Free instances can sleep after idle periods. This preview incurs no paid service or disk provisioned by this configuration.
+
+### Deployment verified on 26 November 2026
+
+Live preview: https://beheard-zimbabwe.onrender.com/
+Render service: srv-dc3p0qbl550s73f56h80
+The initial free deployment reached live status and the homepage was verified in the browser over HTTPS. The service uses the free plan in Oregon with no persistent disk. Cloud founder credentials are unconfigured. Continue using the local founder dashboard for saved edits until durable cloud storage is connected.
+
+
+## Durable storage on free Render
+
+The hosted editor now uses a dedicated Supabase project for durable snapshots of the SQLite database and edited HTML, including embedded photographs. The existing founder password hash is supplied privately through Render environment settings, then retained in the private snapshot. Credentials and drafts are never sent to public pages.
+
+cloud_state.py restores state at startup and saves successful founder changes before confirming the request. A revision check prevents overlapping deployments from overwriting a newer snapshot. Run one Gunicorn worker/thread and one Render instance. Storage failures return an error instead of claiming the save succeeded.
+
+The Supabase state table has row-level security. Its API requires both the publishable key and a server-only random token stored in Render. Neither is included in browser scripts. Free Render can still sleep when idle. Supabase free limits and availability still apply.

@@ -170,6 +170,12 @@ def create_app(private=None, public=None):
     domains = os.environ.get("BEHEARD_DOMAINS", "")
     app.config["TRUSTED_HOSTS"].extend(d.strip() for d in domains.split(",") if d.strip())
 
+    cloud = None
+    if os.environ.get("BEHEARD_STATE_URL"):
+        from cloud_state import CloudState
+        cloud = CloudState(private, public)
+        cloud.restore()
+
     with closing(connect(app)) as db, db:
 
         db.executescript("""
@@ -190,6 +196,12 @@ def create_app(private=None, public=None):
 
         db.execute("INSERT OR IGNORE INTO settings VALUES ('secret',?)", (secrets.token_hex(32),))
 
+        bootstrap = os.environ.get("BEHEARD_FOUNDER_HASH")
+        if bootstrap and not db.execute("SELECT 1 FROM settings WHERE key='password'").fetchone():
+            db.executemany("INSERT OR REPLACE INTO settings VALUES (?,?)", [
+                ("password", bootstrap),
+                ("generation", os.environ["BEHEARD_FOUNDER_GENERATION"]),
+                ("secret", os.environ["BEHEARD_SESSION_SECRET"])])
         app.secret_key = db.execute("SELECT value FROM settings WHERE key='secret'").fetchone()[0]
 
         db.execute("SELECT 1")
@@ -197,6 +209,26 @@ def create_app(private=None, public=None):
         publish_page(app, db)
 
 
+
+    if cloud:
+        cloud.save()
+
+    @app.after_request
+    def persist_changes(response):
+        if cloud and request.method == "POST" and request.path.startswith("/founder"):
+            if response.status_code < 400 or request.endpoint == "login":
+                try:
+                    cloud.save()
+                except Exception:
+                    app.logger.exception("Could not confirm cloud save")
+                    try:
+                        cloud.restore()
+                    except Exception:
+                        app.logger.exception("Cloud restore unavailable")
+                    return app.response_class("We could not confirm the save. Reopen the editor and check your content before retrying.", status=503)
+        if request.path.endswith(".html") or request.path == "/":
+            response.headers["Cache-Control"] = "no-cache"
+        return response
 
     @app.errorhandler(413)
     def upload_too_large(error):
