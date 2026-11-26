@@ -319,7 +319,9 @@ def create_app(private=None, public=None):
         end = stories.find('</section>', heading)
         if start == -1 or end == -1:
             return index
-        return index.replace('</main>', stories[start:end + len('</section>')] + '\n</main>', 1)
+        news = stories[start:end + len('</section>')]
+        shortcut = '<a class="home-news-shortcut" href="#news">News and Events <span aria-hidden="true">↓</span></a>'
+        return index.replace('</main>', news + '\n</main>\n' + shortcut, 1)
 
     @app.get("/gallery.html")
     def gallery():

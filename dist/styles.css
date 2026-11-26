@@ -115,6 +115,20 @@ p:last-child { margin-bottom: 0; }
 .site-footer { background:#14243b; color:white; }
 .nav-donate { background:#b7db69; color:#14243b; }
 .theme-switch { position:fixed; bottom:20px; right:20px; z-index:15; background:var(--paper); color:var(--ink); border:1px solid var(--rule); border-radius:24px; padding:9px 12px; font:inherit; font-size:.88rem; cursor:pointer; }
+body:has(#site-header) .theme-switch { z-index:8; }
+.home-news-shortcut {
+  position:fixed; bottom:20px; left:20px; z-index:8;
+  display:inline-flex; align-items:center; gap:8px; padding:9px 14px;
+  border:1px solid var(--rule); border-radius:24px; background:var(--paper);
+  color:var(--ink); text-decoration:none; font-size:.88rem; font-weight:650;
+}
+.home-news-shortcut:hover { background:#b7db69; color:#14243b; }
+body:has(#site-header)::before {
+  content:''; position:fixed; inset:0; z-index:9; pointer-events:none;
+  background:rgb(10 20 35 / 44%); opacity:0; transition:opacity 180ms ease;
+}
+body:has(#site-header .nav-group[open])::before { opacity:1; }
+@media (prefers-reduced-motion:reduce) { body:has(#site-header)::before { transition:none; } }
 [data-theme=dark] { color-scheme:dark; --paper:#111d2b; --ink:#f0f3f7; --muted:#bcc8d5; --rule:#48586a; --sage:#192b40; --green:#d3deeb; }
 
 [data-theme=dark] #site-header { background:rgb(14 28 45 / 65%); }
@@ -254,7 +268,7 @@ h2 { line-height:1.14; }
 
 /* The portrait fills the right side of the hero, with the copy over navy. */
 .lead.home {
-  --hero-photo:url('/school-visit.jpg');
+  --hero-photo:url('/home-community.jpg');
   position:relative;
   isolation:isolate;
   color:#fff;
