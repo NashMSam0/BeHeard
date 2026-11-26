@@ -223,3 +223,13 @@ h2 { line-height:1.14; }
 
 .editor .current-photo { display:block; width:100%; max-width:240px; height:150px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
 .current-slides { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; }
+
+/* Official supplied logo retains its white background in both themes. */
+.brand-logo { display:block; width:104px; height:104px; object-fit:contain; background:#fff; border-radius:8px; }
+.site-header .brand { padding-block:6px; }
+:root { --header-height:116px; }
+.site-footer .brand-logo { width:156px; height:156px; }
+@media (max-width:1000px) {
+  :root { --header-height:88px; }
+  .brand-logo { width:76px; height:76px; }
+}

@@ -39,7 +39,7 @@ function navItem(item) {
 const header = document.getElementById('site-header');
 if (header) {
   header.innerHTML = `<header class="site-header"><div class="nav-wrap">
-    <a class="brand" href="/index.html" aria-label="BeHeard Zimbabwe"><span class="brand-name">BeHeard <small>Zimbabwe</small></span></a>
+    <a class="brand" href="/" aria-label="BeHeard Zimbabwe"><img class="brand-logo" src="/beheard-logo.jpg" alt="BeHeard Zimbabwe" width="1080" height="1080" fetchpriority="high"></a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">Website Pages</button>
     <nav class="nav-links" id="primary-navigation" aria-label="Website Pages">
       ${navItems.map(navItem).join('')}<a class="nav-donate" href="/involved.html#donate">Donate Now</a>
@@ -89,7 +89,7 @@ if (header) {
 const footer = document.getElementById('site-footer');
 if (footer) {
   footer.innerHTML = `<footer class="site-footer"><div class="wrap footer-content">
-    <a class="brand" href="/index.html">BeHeard Zimbabwe</a>
+    <a class="brand" href="/" aria-label="BeHeard Zimbabwe"><img class="brand-logo" src="/beheard-logo.jpg" alt="BeHeard Zimbabwe" width="1080" height="1080" loading="lazy"></a>
     <address>2539 Chinotimba, Victoria Falls, Zimbabwe
       <a href="tel:+263720116342">+263 72 011 6342</a>
       <a href="mailto:info@beheardzim.org">info@beheardzim.org</a>

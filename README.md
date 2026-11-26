@@ -242,3 +242,8 @@ flowchart TD
   SEO --> Response["Public HTML response"]
   Founder["Founder request"] --> Private["Authentication and noindex header"]
 ```
+
+
+## Official logo - 26 November 2026
+
+The organisation-supplied JPEG is stored unchanged at `dist/beheard-logo.jpg`. Shared navigation and footer markup in `dist/site.js` use this asset on all public pages, with descriptive alternative text and explicit dimensions. CSS preserves its aspect ratio and white background in both themes; header spacing accommodates the square artwork on desktop and mobile. No AI-generated replacement or recolouring is used. The normal deployment asset refresh copies the logo alongside CSS and JavaScript, preserving founder-edited HTML and photographs.
