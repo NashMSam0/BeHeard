@@ -208,9 +208,10 @@ def create_app(private=None, public=None):
 
         db.execute("SELECT 1")
 
-        from uniform_gallery import install_uniform_gallery, update_uniform_caption
+        from uniform_gallery import install_education_categories, install_uniform_gallery, update_uniform_caption
         install_uniform_gallery(public, db)
         update_uniform_caption(public, db)
+        install_education_categories(public, db)
         publish_page(app, db)
 
 
@@ -618,10 +619,9 @@ def create_app(private=None, public=None):
                         source = source.replace('<section class="lead home">', '<!-- home slides -->'+slides+'<!-- end home slides --><section class="lead home">')
                     else:
                         slides = slides.replace('class="home-slideshow"', 'class="home-slideshow uniform-gallery"')
-                        section = re.search(r'<h2>Educational Support</h2>.*?</p>', source, re.S)
-                        if not section:
+                        if '<!-- end uniforms -->' not in source:
                             abort(400, "The Educational Support section could not be found.")
-                        source = source[:section.end()] + '<!-- home slides -->'+slides+'<!-- end home slides -->' + source[section.end():]
+                        source = source.replace('<!-- end uniforms -->', '<!-- home slides -->'+slides+'<!-- end home slides --><!-- end uniforms -->', 1)
 
                 if request.form.get("remove_slides"):
 

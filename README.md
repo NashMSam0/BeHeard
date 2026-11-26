@@ -260,3 +260,5 @@ Local checks verified one-time installation, public page delivery and removal su
 ### Header and uniform story refinement
 
 The header is compact on desktop and phones. Desktop dropdowns open on hover, with contrasting colours in both themes, and still support keyboard and touch activation. The smaller uniform gallery advances every three seconds with manual arrows and no pause button. Reduced motion uses instant transitions. The approved story caption is applied once to stored pages.
+
+Educational Support now groups its Success Stories into Uniforms and Stationary. The Uniforms category contains the approved description and existing slideshow. The Stationary category is ready for its own photographs when supplied.

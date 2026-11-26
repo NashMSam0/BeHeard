@@ -4,6 +4,32 @@ import re
 
 CAPTION = "Providing school uniforms to vulnerable children through the generosity of well-wishers."
 APPROVED_CAPTION = "Children wearing uniforms which we provided"
+UNIFORM_DESCRIPTION = CAPTION.removesuffix(".")
+
+
+def install_education_categories(public, db):
+    key = "education-story-categories-v1"
+    if db.execute("SELECT 1 FROM settings WHERE key=?", (key,)).fetchone():
+        return
+    page = Path(public) / "stories.html"
+    source = page.read_text(encoding="utf-8")
+    if 'class="education-categories"' not in source:
+        match = re.search(
+            r'(<h2>Educational Support</h2>\s*<div class="prose">)\s*<p>[^<]*</p>'
+            r'(\s*<!-- home slides -->.*?<!-- end home slides -->)?', source, re.S,
+        )
+        if not match:
+            raise RuntimeError("Educational Support story placement requires review")
+        categories = (
+            '<div class="education-categories">'
+            '<details name="education-stories"><summary>Uniforms</summary>'
+            '<ul class="education-story-description"><li><p>' + UNIFORM_DESCRIPTION + '</p></li></ul>'
+            + (match[2] or '') + '<!-- end uniforms --></details>'
+            '<details name="education-stories"><summary>Stationary</summary></details>'
+            '</div>'
+        )
+        page.write_text(source[:match.start()] + match[1] + categories + source[match.end():], encoding="utf-8")
+    db.execute("INSERT INTO settings VALUES (?,?)", (key, "installed"))
 
 
 def update_uniform_caption(public, db):

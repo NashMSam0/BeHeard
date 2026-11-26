@@ -155,7 +155,7 @@ document.querySelectorAll('.home-slideshow').forEach(slideshow => {
       }
     });
     setInterval(() => {
-      if (!document.hidden && track.children.length > 1) move(1);
+      if (!document.hidden && track.clientWidth && track.children.length > 1) move(1);
     }, 3000);
     return;
   }
