@@ -2,7 +2,7 @@
 
 BeHeard Zimbabwe is a community organisation in Victoria Falls. Its website introduces the people behind the organisation, explains its five programmes and gives visitors ways to enquire about support, volunteering, partnerships and donations.
 
-**Project status · 25 November 2026**  
+**Project status � 25 November 2026**  
 The seven-page static site is ready for local review. A local founder dashboard supports news publishing. Online payments and form submissions still need implementation. The preferred public address in the project brief is `www.beheardzim.org`. Domain ownership, hosting and a live HTTPS deployment have yet to be verified.
 
 ## Preview on Windows
@@ -21,14 +21,14 @@ Open [the local preview](http://127.0.0.1:8765/) in your browser. Press `Ctrl+C`
 | Page | What it contains |
 | --- | --- |
 | [Home](dist/index.html) | Introduction to BeHeard, featured programmes, stories and ways to contribute. |
-| [About us](dist/about.html) | Mission, vision, values and founder Ashley Mutamiri’s profile. Space is reserved for board and team biographies. |
-| [Programmes](dist/programmes.html) | Carlos’ Crusaders Scholarships, counselling and psychosocial support, women and community empowerment, child protection and welfare, and community outreach. |
+| [About us](dist/about.html) | Mission, vision, values and founder Ashley Mutamiri's profile. Space is reserved for board and team biographies. |
+| [Programmes](dist/programmes.html) | Carlos' Crusaders Scholarships, counselling and psychosocial support, women and community empowerment, child protection and welfare, and community outreach. |
 | [Stories and updates](dist/stories.html) | Three examples from the brief covering a sewing machine, school uniforms and scholarships. The news and events section awaits its first update. |
 | [Get involved](dist/involved.html) | Donation and sponsorship options. Visitors can ask for payment instructions, express interest in volunteering or partnering, and request updates by email. |
 | [Contact](dist/contact.html) | Phone, email, WhatsApp, street address and map links. Counselling enquiries are directed to the team by phone. |
 | [Privacy and safeguarding](dist/privacy.html) | Draft notice covering enquiries, external services and consent for use of stories and photographs. |
 
-The site uses the brief’s navy, lime, mustard and white palette, a responsive layout and a mobile menu. General enquiries, volunteer and partnership requests, and requests for updates open a draft in the visitor’s email app. The visitor sends the message from that app. The site itself stores no submissions.
+The site uses the brief's navy, lime, mustard and white palette, a responsive layout and a mobile menu. General enquiries, volunteer and partnership requests, and requests for updates open a draft in the visitor's email app. The visitor sends the message from that app. The site itself stores no submissions.
 
 ## How to update the current site
 
@@ -60,7 +60,7 @@ The publisher updates the marked section in `dist/stories.html`. Keep both news 
 
 | Area | Next milestone |
 | --- | --- |
-| Domain and hosting | Confirm or register the preferred domain under BeHeard Zimbabwe’s control, connect it to static hosting, verify HTTPS and set up regular backups. |
+| Domain and hosting | Confirm or register the preferred domain under BeHeard Zimbabwe's control, connect it to static hosting, verify HTTPS and set up regular backups. |
 | Staff publishing | Activate the founder password, arrange production publishing and train the founder. The current editor covers news updates and their photographs. |
 | Content and branding | Add the official logo, approved founder and project photos, board and team biographies, confirmed social links and news. Build the photo and video gallery with consent-cleared material. |
 | Donations | Confirm payment methods and connect a provider for once-off and recurring donations. The current Donate button leads to information and an enquiry link. |
@@ -199,3 +199,24 @@ The hosted editor now uses a dedicated Supabase project for durable snapshots of
 cloud_state.py restores state at startup and saves successful founder changes before confirming the request. A revision check prevents overlapping deployments from overwriting a newer snapshot. Run one Gunicorn worker/thread and one Render instance. Storage failures return an error instead of claiming the save succeeded.
 
 The Supabase state table has row-level security. Its API requires both the publishable key and a server-only random token stored in Render. Neither is included in browser scripts. Free Render can still sleep when idle. Supabase free limits and availability still apply.
+
+### Hosted configuration verified on 26 November 2026
+
+The live Render service now uses free Supabase project zervutwgwjxgranjcqyd for durable editor state. This supersedes the earlier temporary-storage limitation. The existing local founder account was provisioned privately on the host. Sign in at https://beheard-zimbabwe.onrender.com/founder/ using the existing founder password.
+
+The deployment reached live status. The health endpoint returned ok. Supabase contains snapshots of all seven pages, and a subsequent deployment restored that state. Anonymous access without the server token returned no rows; the Supabase security advisor reported no findings. Snapshot save/restart recovery was tested on isolated copies. The browser sign-in form is active; a successful interactive password submission remains for the founder to verify.
+
+```mermaid
+flowchart TD
+  Visitor["Visitor"] --> Render["Render Flask service"]
+  Founder["Founder with password"] --> Editor["Protected editor"]
+  Editor --> Render
+  Render --> Local["Working HTML and SQLite"]
+  Local --> Save["Revision-checked snapshot"]
+  Save --> Supabase["Private Supabase state"]
+  Supabase --> Restore["Restore on startup"]
+  Restore --> Local
+```
+
+Free service limits still apply. A free Render instance can sleep. Domain registration, payment-provider details, approved photographs and full enquiry/newsletter form services remain separate unfinished scope items. The current deployment covers the existing public pages and founder content-editing workflow.
+
