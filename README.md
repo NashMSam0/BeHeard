@@ -262,3 +262,7 @@ Local checks verified one-time installation, public page delivery and removal su
 The header is compact on desktop and phones. Desktop dropdowns open on hover, with contrasting colours in both themes, and still support keyboard and touch activation. The smaller uniform gallery advances every three seconds with manual arrows and no pause button. Reduced motion uses instant transitions. The approved story caption is applied once to stored pages.
 
 Educational Support now groups its Success Stories into Uniforms and Stationary. The Uniforms category contains the approved description and existing slideshow. Stationary contains the two supplied school-supply photographs. The desktop tabs place the gallery beside the text and the mobile layout stacks them. The group photo is used as the homepage hero background.
+
+### Site navigation and page coverage
+
+Our Board and Team and Gallery are standalone pages. About Us links to the founder and team. Success Stories links to Gallery and News and Events. Our Programmes links to the scholarship and counselling content. Donate and Volunteer and Partner With Us remain linked sections of Donations and Sponsorships, and Privacy Policy is in the footer. The Stationary caption is installed once in the stored Stories page and can be edited in the founder dashboard.

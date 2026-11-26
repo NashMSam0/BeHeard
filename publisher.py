@@ -208,11 +208,13 @@ def create_app(private=None, public=None):
 
         db.execute("SELECT 1")
 
-        from uniform_gallery import install_education_categories, install_stationary_photos, install_uniform_gallery, update_uniform_caption
+        from uniform_gallery import (install_education_categories, install_stationary_photos,
+                                     install_uniform_gallery, update_stationary_caption, update_uniform_caption)
         install_uniform_gallery(public, db)
         update_uniform_caption(public, db)
         install_education_categories(public, db)
         install_stationary_photos(public, db)
+        update_stationary_caption(public, db)
         publish_page(app, db)
 
 
@@ -491,7 +493,7 @@ def create_app(private=None, public=None):
 
     def pages():
 
-        names = {"index.html": "Home", "about.html": "About", "programmes.html": "Programmes", "stories.html": "Stories", "involved.html": "Donations and volunteering", "contact.html": "Contact", "privacy.html": "Privacy"}
+        names = {"index.html": "Home", "about.html": "About", "board.html": "Our Board and Team", "programmes.html": "Programmes", "stories.html": "Stories", "gallery.html": "Gallery", "involved.html": "Donations and volunteering", "contact.html": "Contact", "privacy.html": "Privacy"}
 
         name = request.values.get("page", "index.html")
 

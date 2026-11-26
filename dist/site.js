@@ -1,18 +1,23 @@
 const navItems = [
   { label: 'Home', href: '/index.html', page: 'home' },
-  { label: 'About Us', href: '/about.html', page: 'about' },
+  { label: 'About Us', href: '/about.html', page: 'about', overview: 'About Us', sections: [
+    ['Meet Our Founder', 'founder'], ['Our Board and Team', '/board.html']
+  ] },
   {
     label: 'Our Programmes', href: '/programmes.html', page: 'programmes',
     overview: 'Our Programmes',
     sections: [
       ['Educational Support', 'education'],
+      ['Carlos’ Crusaders Scholarships', 'education'],
       ['Counselling Services', 'counselling'],
       ['Women and Community Empowerment', 'empowerment'],
       ['Child Protection and Welfare', 'child-protection'],
       ['Community Outreach', 'outreach']
     ]
   },
-  { label: 'Success Stories', href: '/stories.html', page: 'stories' },
+  { label: 'Success Stories', href: '/stories.html', page: 'stories', overview: 'Success Stories', sections: [
+    ['Gallery', '/gallery.html'], ['News and Events', 'news']
+  ] },
   {
     label: 'Sponsorships', href: '/involved.html', page: 'involved',
     overview: 'Donations and Sponsorships',
@@ -29,7 +34,10 @@ const page = document.body.dataset.page;
 function navItem(item) {
   const current = item.page === page ? ' aria-current="page"' : '';
   if (!item.sections) return `<a href="${item.href}"${current}>${item.label}</a>`;
-  const links = item.sections.map(([label, id]) => `<a href="${item.href}#${id}">${label}</a>`);
+  const links = item.sections.map(([label, target]) => {
+    const href = target.startsWith('/') ? target : `${item.href}#${target}`;
+    return `<a href="${href}">${label}</a>`;
+  });
   return `<details class="nav-group">
     <summary>${item.label}</summary>
     <div class="nav-panel"><a href="${item.href}"${current}>${item.overview}</a>${links.join('')}</div>

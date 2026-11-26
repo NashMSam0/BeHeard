@@ -291,6 +291,8 @@ h2 { line-height:1.14; }
 .education-panel .uniform-gallery { grid-column:1; grid-row:1; margin:0; max-width:none; border-radius:0; background:#1e3049; }
 .education-panel .slide-track { height:clamp(300px,36vw,460px); border-radius:0; }
 .education-panel .slide-track img { background:#1e3049; }
+.gallery-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:20px; max-width:660px; margin-block:20px; }
+.gallery-grid img { display:block; width:100%; height:auto; border-radius:12px; }
 
 @media(max-width:700px) {
   .lead.home {

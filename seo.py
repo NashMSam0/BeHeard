@@ -7,7 +7,7 @@ from urllib.parse import urlsplit
 from flask import Response, redirect, request
 
 PAGES = ("", "about.html", "programmes.html", "stories.html", "involved.html",
-         "contact.html", "privacy.html")
+         "contact.html", "privacy.html", "board.html", "gallery.html")
 
 
 def configure_seo(app):

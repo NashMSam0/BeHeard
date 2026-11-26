@@ -7,6 +7,23 @@ APPROVED_CAPTION = "Children wearing uniforms which we provided"
 UNIFORM_DESCRIPTION = CAPTION.removesuffix(".")
 
 
+def update_stationary_caption(public, db):
+    key = "stationary-caption-v1"
+    if db.execute("SELECT 1 FROM settings WHERE key=?", (key,)).fetchone():
+        return
+    page = Path(public) / "stories.html"
+    source = page.read_text(encoding="utf-8")
+    anchor = '<summary>Stationary</summary>'
+    caption = '<p>Preparing stationary for children going back to school</p>'
+    if source.count(anchor) != 1:
+        raise RuntimeError("Stationary caption placement requires review")
+    updated = source.replace(anchor, anchor + caption, 1) if anchor + caption not in source else source
+    updated = updated.replace('<h2>Educational Support</h2>', '<h2 id="educational-support">Educational Support</h2>', 1)
+    if updated != source:
+        page.write_text(updated, encoding="utf-8")
+    db.execute("INSERT INTO settings VALUES (?,?)", (key, "installed"))
+
+
 def install_stationary_photos(public, db):
     key = "stationary-story-photos-v1"
     if db.execute("SELECT 1 FROM settings WHERE key=?", (key,)).fetchone():
