@@ -1,0 +1,7 @@
+.beheard/
+__pycache__/
+.env
+.env.*
+*.sqlite3
+*.sqlite3-*
+.openai/
