@@ -134,6 +134,111 @@ mode.addEventListener('click', () => {
   try { localStorage.setItem('beheard-theme', document.documentElement.dataset.theme); } catch {}
 });
 document.body.append(mode);
+
+
+function makeStorySlideshow(grids, label) {
+  const items = Array.from(grids).flatMap(grid => Array.from(grid.children));
+  if (items.length < 2) return;
+
+  const slideshow = document.createElement('div');
+  slideshow.className = 'story-slideshow';
+  slideshow.setAttribute('role', 'region');
+  slideshow.setAttribute('aria-label', label);
+  const controls = document.createElement('div');
+  controls.className = 'story-slide-controls';
+  const previous = document.createElement('button');
+  const next = document.createElement('button');
+  const position = document.createElement('span');
+  previous.type = next.type = 'button';
+  previous.textContent = 'Previous';
+  next.textContent = 'Next';
+  position.setAttribute('aria-live', 'polite');
+  controls.append(previous, position, next);
+  grids[0].before(slideshow);
+
+  const slides = items.map(item => {
+    const slide = document.createElement('div');
+    slide.className = 'story-slide';
+    slide.append(item);
+    slideshow.append(slide);
+    return slide;
+  });
+  slideshow.append(controls);
+  grids.forEach(grid => grid.remove());
+
+  let current = 0;
+  let advanceTimer;
+  let inView = false;
+  const nextIndex = () => (current + 1) % slides.length;
+
+  function startCurrent() {
+    clearTimeout(advanceTimer);
+    if (!inView || document.hidden) return;
+    const video = slides[current].querySelector('video');
+    if (video) {
+      video.play().catch(() => { /* Native controls remain available if autoplay is blocked. */ });
+    } else {
+      advanceTimer = setTimeout(() => show(nextIndex()), 3000);
+    }
+  }
+
+  function show(index) {
+    const previousVideo = slides[current].querySelector('video');
+    if (previousVideo) {
+      previousVideo.pause();
+      previousVideo.currentTime = 0;
+    }
+    current = index;
+    slides.forEach((slide, i) => { slide.hidden = i !== current; });
+    position.textContent = `${current + 1} / ${slides.length}`;
+    startCurrent();
+  }
+  previous.addEventListener('click', () => show((current + slides.length - 1) % slides.length));
+  next.addEventListener('click', () => show(nextIndex()));
+  slides.forEach((slide, index) => {
+    const video = slide.querySelector('video');
+    if (!video) return;
+    video.muted = true;
+    video.addEventListener('ended', () => {
+      if (current === index) show(nextIndex());
+    });
+  });
+  const updatePlayback = () => {
+    if (!inView || document.hidden) slides[current].querySelector('video')?.pause();
+    startCurrent();
+  };
+  const observer = new IntersectionObserver(([entry]) => {
+    inView = entry.isIntersecting;
+    updatePlayback();
+  }, { threshold: 0.15 });
+  observer.observe(slideshow);
+  document.addEventListener('visibilitychange', updatePlayback);
+  show(0);
+}
+
+makeStorySlideshow(document.querySelectorAll('#sewing-story .impact-media > .impact-grid'),
+  'Women and Community Empowerment photos and videos');
+makeStorySlideshow(document.querySelectorAll('#assisting-vulnerable-families .prose > .impact-grid'),
+  'Assisting Vulnerable Families');
+const homeHero = document.querySelector('.lead.home');
+if (homeHero) {
+  const photographs = ['/school-visit.jpg', '/family-donation.jpg', '/home-community.jpg'];
+  const photos = photographs.map(path => {
+    const photo = new Image();
+    photo.src = path;
+    return photo;
+  });
+  let currentPhoto = 0;
+  setInterval(() => {
+    if (document.hidden) return;
+    const next = (currentPhoto + 1) % photographs.length;
+    if (!photos[next].complete || !photos[next].naturalWidth) return;
+    currentPhoto = next;
+    homeHero.style.setProperty('--hero-photo', `url('${photographs[currentPhoto]}')`);
+    homeHero.classList.toggle('hero-fade-a');
+    homeHero.classList.toggle('hero-fade-b', !homeHero.classList.contains('hero-fade-a'));
+  }, 3000);
+}
 const education = document.querySelector('.education-categories');
 if (education) {
   const tablist = document.createElement('div');
@@ -233,58 +338,3 @@ document.querySelectorAll('.home-slideshow').forEach(slideshow => {
     move(1);
   }, 5500);
 });
-
-
-function makeStorySlideshow(grids, label) {
-  const items = Array.from(grids).flatMap(grid => Array.from(grid.children));
-  if (items.length < 2) return;
-
-  const slideshow = document.createElement('div');
-  slideshow.className = 'story-slideshow';
-  slideshow.setAttribute('role', 'region');
-  slideshow.setAttribute('aria-label', label);
-  const controls = document.createElement('div');
-  controls.className = 'story-slide-controls';
-  const previous = document.createElement('button');
-  const next = document.createElement('button');
-  const position = document.createElement('span');
-  previous.type = next.type = 'button';
-  previous.textContent = 'Previous';
-  next.textContent = 'Next';
-  position.setAttribute('aria-live', 'polite');
-  controls.append(previous, position, next);
-  grids[0].before(slideshow);
-
-  const slides = items.map(item => {
-    const slide = document.createElement('div');
-    slide.className = 'story-slide';
-    slide.append(item);
-    slideshow.append(slide);
-    return slide;
-  });
-  slideshow.append(controls);
-  grids.forEach(grid => grid.remove());
-
-  let current = 0;
-  function show(index) {
-    slides[current].querySelector('video')?.pause();
-    current = index;
-    slides.forEach((slide, i) => { slide.hidden = i !== current; });
-    position.textContent = `${current + 1} / ${slides.length}`;
-    previous.disabled = current === 0;
-    next.disabled = current === slides.length - 1;
-  }
-  previous.addEventListener('click', () => show(current - 1));
-  next.addEventListener('click', () => show(current + 1));
-  slides.forEach((slide, index) => {
-    slide.querySelector('video')?.addEventListener('ended', () => {
-      if (current === index && index + 1 < slides.length) show(index + 1);
-    });
-  });
-  show(0);
-}
-
-makeStorySlideshow(document.querySelectorAll('#sewing-story .impact-media > .impact-grid'),
-  'Women and Community Empowerment photos and videos');
-makeStorySlideshow(document.querySelectorAll('#assisting-vulnerable-families .prose > .impact-grid'),
-  'Assisting Vulnerable Families');
