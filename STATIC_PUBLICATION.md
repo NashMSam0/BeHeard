@@ -148,7 +148,7 @@ database or running content migrations. It is for review, not a substitute for a
 confirmed live snapshot. `public-build/`, `.openai/`, `.beheard/`, `.env*` and private
 database files stay excluded from Git.
 
-Verified locally on 26 November 2026: 18 isolated regression tests; Python compilation;
+Verified locally on 26 November 2026: 20 isolated regression tests; Python compilation;
 JavaScript syntax; both Blueprints against Render's current JSON Schema; and browser
 checks at phone/desktop sizes, light/dark themes, scrolling, homepage news, grouped
 gallery, navigation, story slideshow and education tabs. The browser reported no

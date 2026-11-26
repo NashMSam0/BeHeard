@@ -13,7 +13,7 @@ import stat
 from tempfile import TemporaryDirectory
 import unittest
 import warnings
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 import zipfile
 
 from werkzeug.security import generate_password_hash
@@ -22,6 +22,7 @@ from build_static import download_artifact, validate_artifact, write_site
 from cloud_state import CloudState
 from public_artifact import collect_public, pack_artifact
 from public_manifest import PUBLIC_ASSETS, PUBLIC_FILES, PUBLIC_PAGES
+from publication import NoRedirects, trigger_deploy
 from publisher import ROOT, connect, create_app
 
 TOKEN = "test-export-token-" + "x" * 40
@@ -373,6 +374,35 @@ class CloudContractTests(unittest.TestCase):
             with patch.object(cloud, "request", return_value=[]), self.assertRaises(RuntimeError):
                 cloud.save()
             self.assertEqual(cloud.revision, 42)
+
+
+class TransportTests(unittest.TestCase):
+    def test_bearer_is_only_in_header_and_redirects_are_disabled(self):
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.status = 200
+        response.read.return_value = b"public artifact"
+        with patch("build_static.build_opener") as factory:
+            factory.return_value.open.return_value = response
+            body = download_artifact("https://admin.example.org/publication/artifact.zip", TOKEN)
+            self.assertEqual(body, b"public artifact")
+            req = factory.return_value.open.call_args.args[0]
+            self.assertEqual(req.get_header("Authorization"), "Bearer " + TOKEN)
+            self.assertNotIn(TOKEN, req.full_url)
+            redirect_handler = factory.call_args.args[0]()
+            self.assertIsNone(redirect_handler.redirect_request(None, None, 302, None, None, "https://elsewhere.invalid"))
+
+    def test_hook_accepts_started_and_queued_responses(self):
+        for code in (200, 202):
+            response = MagicMock()
+            response.__enter__.return_value = response
+            response.status = code
+            with patch("publication.build_opener") as factory:
+                factory.return_value.open.return_value = response
+                trigger_deploy(HOOK)
+                req = factory.return_value.open.call_args.args[0]
+                self.assertEqual(req.get_method(), "POST")
+                self.assertTrue(issubclass(factory.call_args.args[0], NoRedirects))
 
 
 if __name__ == "__main__":
