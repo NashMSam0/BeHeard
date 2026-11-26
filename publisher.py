@@ -209,12 +209,14 @@ def create_app(private=None, public=None):
         db.execute("SELECT 1")
 
         from uniform_gallery import (install_education_categories, install_stationary_photos,
-                                     install_uniform_gallery, update_stationary_caption, update_uniform_caption)
+                                     install_uniform_gallery, update_stationary_bullet,
+                                     update_stationary_caption, update_uniform_caption)
         install_uniform_gallery(public, db)
         update_uniform_caption(public, db)
         install_education_categories(public, db)
         install_stationary_photos(public, db)
         update_stationary_caption(public, db)
+        update_stationary_bullet(public, db)
         from impact_stories import install_impact_stories
         install_impact_stories(public, db)
         from outreach_stories import install_outreach_stories
