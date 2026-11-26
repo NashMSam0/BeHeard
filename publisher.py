@@ -308,8 +308,23 @@ def create_app(private=None, public=None):
     @app.route("/")
 
     def home():
+        index = (public / "index.html").read_text(encoding="utf-8")
+        index = re.sub(r'<!-- home slides -->.*?<!-- end home slides -->|<figure class="page-photo">.*?</figure>',
+                       '', index, flags=re.S)
+        stories = (public / "stories.html").read_text(encoding="utf-8")
+        heading = stories.find('<h2 id="news">')
+        if heading == -1:
+            return index
+        start = stories.rfind('<section ', 0, heading)
+        end = stories.find('</section>', heading)
+        if start == -1 or end == -1:
+            return index
+        return index.replace('</main>', stories[start:end + len('</section>')] + '\n</main>', 1)
 
-        return app.send_static_file("index.html")
+    @app.get("/gallery.html")
+    def gallery():
+        saved = (public / "gallery.html").read_text(encoding="utf-8")
+        return saved.replace('</main>', render_template('gallery_groups.html') + '\n</main>', 1)
 
 
 

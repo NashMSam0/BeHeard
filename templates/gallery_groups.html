@@ -1,0 +1,17 @@
+{% set groups = [
+  ('Uniforms', [('/uniform-1.jpg', 'Green school uniform and hat'), ('/uniform-2.jpg', 'Green school tracksuit'), ('/uniform-3.jpg', 'Red school sports shirt and shorts')]),
+  ('Women and Community Empowerment', [('/sewing-story-1.jpg', 'A woman shows a patterned garment she made'), ('/sewing-story-2.jpg', 'A finished blue patterned dress'), ('/sewing-story-3.jpg', 'The sewing machine provided by BeHeard Zimbabwe')]),
+  ('Assisting Vulnerable Families', [('/family-home-1.jpg', 'Entrance to the former shelter'), ('/family-home-2.jpg', 'Inside the former living quarters'), ('/family-home-3.jpg', 'Exterior of the former shelter')]),
+  ('Community Outreach', [('/school-visit.jpg', 'Students in a classroom during a school visit'), ('/family-donation.jpg', 'A family receiving a donation at the school'), ('/home-community.jpg', 'A group together outdoors')]),
+  ('Children’s Christmas Party', [('/christmas-outreach.jpg', 'Christmas outreach poster'), ('/christmas-programme.jpg', 'Children’s Christmas Party timetable')])
+] %}
+{% for heading, photos in groups %}
+<section class="block"><div class="wrap">
+  <h2>{{ heading }}</h2>
+  <div class="gallery-grid">
+    {% for src, alt in photos %}
+    <a href="{{ src }}"><img src="{{ src }}" alt="{{ alt }}" loading="lazy" decoding="async"></a>
+    {% endfor %}
+  </div>
+</div></section>
+{% endfor %}

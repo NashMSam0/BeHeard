@@ -119,20 +119,30 @@ if (footer) {
       <a href="/privacy.html">Privacy Policy</a>
     </nav></div></footer>`;
 }
-const mode = document.createElement('button');
+const mode = document.createElement('select');
 mode.className = 'theme-switch';
-mode.type = 'button';
-function applyTheme(value) {
-  document.documentElement.dataset.theme = value;
-  mode.textContent = value === 'dark' ? 'Light mode' : 'Dark mode';
+mode.setAttribute('aria-label', 'Colour mode');
+const systemTheme = matchMedia('(prefers-color-scheme: dark)');
+const themeChoices = { light: 'Light mode', dark: 'Dark mode', system: 'System settings' };
+for (const [value, label] of Object.entries(themeChoices)) {
+  const option = document.createElement('option');
+  option.value = value;
+  option.textContent = label;
+  mode.append(option);
 }
-let savedTheme;
+function applyTheme() {
+  const useDark = mode.value === 'dark' || (mode.value === 'system' && systemTheme.matches);
+  document.documentElement.dataset.theme = useDark ? 'dark' : 'light';
+}
+let savedTheme = null;
 try { savedTheme = localStorage.getItem('beheard-theme'); } catch {}
-applyTheme(savedTheme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-mode.addEventListener('click', () => {
-  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-  try { localStorage.setItem('beheard-theme', document.documentElement.dataset.theme); } catch {}
+mode.value = Object.hasOwn(themeChoices, savedTheme) ? savedTheme : 'light';
+applyTheme();
+mode.addEventListener('change', () => {
+  applyTheme();
+  try { localStorage.setItem('beheard-theme', mode.value); } catch {}
 });
+systemTheme.addEventListener('change', applyTheme);
 document.body.append(mode);
 
 
@@ -220,25 +230,6 @@ makeStorySlideshow(document.querySelectorAll('#sewing-story .impact-media > .imp
   'Women and Community Empowerment photos and videos');
 makeStorySlideshow(document.querySelectorAll('#assisting-vulnerable-families .prose > .impact-grid'),
   'Assisting Vulnerable Families');
-const homeHero = document.querySelector('.lead.home');
-if (homeHero) {
-  const photographs = ['/school-visit.jpg', '/family-donation.jpg', '/home-community.jpg'];
-  const photos = photographs.map(path => {
-    const photo = new Image();
-    photo.src = path;
-    return photo;
-  });
-  let currentPhoto = 0;
-  setInterval(() => {
-    if (document.hidden) return;
-    const next = (currentPhoto + 1) % photographs.length;
-    if (!photos[next].complete || !photos[next].naturalWidth) return;
-    currentPhoto = next;
-    homeHero.style.setProperty('--hero-photo', `url('${photographs[currentPhoto]}')`);
-    homeHero.classList.toggle('hero-fade-a');
-    homeHero.classList.toggle('hero-fade-b', !homeHero.classList.contains('hero-fade-a'));
-  }, 3000);
-}
 const education = document.querySelector('.education-categories');
 if (education) {
   const tablist = document.createElement('div');

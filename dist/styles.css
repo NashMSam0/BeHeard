@@ -114,7 +114,7 @@ p:last-child { margin-bottom: 0; }
 
 .site-footer { background:#14243b; color:white; }
 .nav-donate { background:#b7db69; color:#14243b; }
-.theme-switch { position:fixed; bottom:20px; right:20px; z-index:15; background:#14243b; color:white; border:1px solid #b7db69; border-radius:24px; padding:12px 18px; cursor:pointer; }
+.theme-switch { position:fixed; bottom:20px; right:20px; z-index:15; background:var(--paper); color:var(--ink); border:1px solid var(--rule); border-radius:24px; padding:9px 12px; font:inherit; font-size:.88rem; cursor:pointer; }
 [data-theme=dark] { color-scheme:dark; --paper:#111d2b; --ink:#f0f3f7; --muted:#bcc8d5; --rule:#48586a; --sage:#192b40; --green:#d3deeb; }
 
 [data-theme=dark] #site-header { background:rgb(14 28 45 / 65%); }
@@ -269,13 +269,6 @@ h2 { line-height:1.14; }
     linear-gradient(90deg, #14243b 0%, #14243b 38%, transparent 66%) center / cover no-repeat,
     var(--hero-photo) right 65% / 62% auto no-repeat #14243b;
 }
-.hero-fade-a::before { animation:hero-photo-fade-a 300ms ease-out; }
-.hero-fade-b::before { animation:hero-photo-fade-b 300ms ease-out; }
-@keyframes hero-photo-fade-a { from { opacity:.6; } to { opacity:1; } }
-@keyframes hero-photo-fade-b { from { opacity:.6; } to { opacity:1; } }
-@media (prefers-reduced-motion:reduce) {
-  .hero-fade-a::before, .hero-fade-b::before { animation:none; }
-}
 .home .home-grid { grid-template-columns:minmax(0, 53%) minmax(0, 1fr); gap:24px; }
 .home .home-grid > * { grid-column:1; }
 .home .kicker { color:#e1ebf5; }
@@ -310,8 +303,8 @@ h2 { line-height:1.14; }
 .education-panel .slide-track { height:clamp(220px,24vw,300px); border-radius:8px; }
 .education-panel .slide-track img { background:transparent; }
 .education-panel .gallery-controls { padding:8px 0; }
-.gallery-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:20px; max-width:660px; margin-block:20px; }
-.gallery-grid img { display:block; width:100%; height:auto; border-radius:12px; }
+.gallery-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap:16px; max-width:880px; margin-block:20px; }
+.gallery-grid img { display:block; width:100%; height:clamp(180px,28vw,320px); object-fit:contain; border-radius:8px; }
 .impact-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; margin-block:20px; }
 .impact-grid img, .impact-grid video { display:block; width:100%; aspect-ratio:4 / 5; object-fit:contain; background:var(--sage); border-radius:10px; }
 .impact-grid figure { margin:0; min-width:0; }

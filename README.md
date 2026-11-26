@@ -270,3 +270,5 @@ Our Board and Team and Gallery are standalone pages. About Us links to the found
 Success Stories includes the sewing machine story and Assisting Vulnerable Families. The programme page links to the sewing story. Videos use standard controls with playback on demand.
 
 The homepage hero rotates the school visit, family donation and community photos every three seconds. Success Stories includes a separately identified family donation, photos and videos of the former home, and the Children’s Christmas Party announcement in News and Events.
+
+The homepage uses the school-visit photo and displays the same published News and Events section as Stories. Light mode is the default, with Dark mode and System settings available in the colour selector. The Gallery groups the supplied photos by story and event.
