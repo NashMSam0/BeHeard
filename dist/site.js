@@ -48,6 +48,16 @@ if (header) {
   const toggle = header.querySelector('.menu-toggle');
   const nav = header.querySelector('nav');
   const groups = [...nav.querySelectorAll('details')];
+  const hoverNavigation = matchMedia('(min-width: 1001px) and (hover: hover) and (pointer: fine)');
+  groups.forEach(group => {
+    group.addEventListener('pointerenter', event => {
+      if (!hoverNavigation.matches || event.pointerType === 'touch') return;
+      groups.forEach(other => { other.open = other === group; });
+    });
+    group.addEventListener('pointerleave', () => {
+      if (hoverNavigation.matches && !group.contains(document.activeElement)) group.open = false;
+    });
+  });
 
   function closeNavigation() {
     groups.forEach(group => { group.open = false; });
@@ -135,12 +145,19 @@ document.querySelectorAll('.home-slideshow').forEach(slideshow => {
     next.type = 'button'; next.textContent = '→'; next.setAttribute('aria-label', 'Next photograph');
     previous.addEventListener('click', () => move(-1));
     next.addEventListener('click', () => move(1));
-    controls.append(previous, toggle, next); slideshow.append(controls);
+    toggle?.remove();
+    controls.append(previous, next);
+    slideshow.append(controls);
+    track.tabIndex = 0;
     track.addEventListener('keydown', event => {
       if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
         event.preventDefault(); move(event.key === 'ArrowRight' ? 1 : -1);
       }
     });
+    setInterval(() => {
+      if (!document.hidden && track.children.length > 1) move(1);
+    }, 3000);
+    return;
   }
   const update = () => { toggle.textContent = paused ? 'Play photographs' : 'Pause photographs'; };
   toggle.addEventListener('click', () => { paused = !paused; update(); });

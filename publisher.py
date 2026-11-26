@@ -208,8 +208,9 @@ def create_app(private=None, public=None):
 
         db.execute("SELECT 1")
 
-        from uniform_gallery import install_uniform_gallery
+        from uniform_gallery import install_uniform_gallery, update_uniform_caption
         install_uniform_gallery(public, db)
+        update_uniform_caption(public, db)
         publish_page(app, db)
 
 

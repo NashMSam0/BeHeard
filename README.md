@@ -256,3 +256,7 @@ Three consent-approved photographs accompany the existing Educational Support pa
 `uniform_gallery.py` installs the gallery once after restoring hosted state, using a private settings marker. Later founder removals are not recreated by restarts. This migration preserves surrounding page edits and published news. In Founder > Website pages > Stories, the founder can remove individual photos, replace the sequence or remove it completely. Images uploaded there stay in the existing durable HTML snapshot workflow. Existing public story wording is retained.
 
 Local checks verified one-time installation, public page delivery and removal surviving a restart. JavaScript syntax and browser layout/controls are checked before deployment.
+
+### Header and uniform story refinement
+
+The header is compact on desktop and phones. Desktop dropdowns open on hover, with contrasting colours in both themes, and still support keyboard and touch activation. The smaller uniform gallery advances every three seconds with manual arrows and no pause button. Reduced motion uses instant transitions. The approved story caption is applied once to stored pages.
