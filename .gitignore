@@ -1,7 +1,13 @@
 .beheard/
 __pycache__/
+
+
 .env
 .env.*
 *.sqlite3
 *.sqlite3-*
 .openai/
+public-build/
+.beheard-build-*/
+.venv/
+.pytest_cache/

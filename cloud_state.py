@@ -62,3 +62,8 @@ class CloudState:
             raise RuntimeError("Website content changed on another instance")
         self.revision = revision
 
+    def check_revision(self):
+        """A retiring instance must not export a snapshot older than durable state."""
+        rows = self.request(query="?id=eq.1&select=revision")
+        if len(rows) != 1 or rows[0]["revision"] != self.revision:
+            raise RuntimeError("Website storage revision is unavailable or has changed")

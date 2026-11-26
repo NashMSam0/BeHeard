@@ -178,6 +178,10 @@ def create_app(private=None, public=None):
         cloud = CloudState(private, public)
         cloud.restore()
 
+    app.config["ADMIN_ONLY"] = os.environ.get("BEHEARD_ADMIN_ONLY") == "1"
+    from publication import configure_publication
+    publication = configure_publication(app, connect, cloud)
+
     with closing(connect(app)) as db, db:
 
         db.executescript("""
@@ -225,22 +229,36 @@ def create_app(private=None, public=None):
 
 
 
+    initial_artifact = publication.prepare()
     if cloud:
         cloud.save()
+    publication.confirm(initial_artifact)
+    publication.notify()
 
     @app.after_request
     def persist_changes(response):
         if cloud and request.method == "POST" and request.path.startswith("/founder"):
-            if response.status_code < 400 or request.endpoint == "login":
+            if response.status_code < 400 or (request.endpoint == "login" and response.status_code in (401, 429)):
                 try:
+                    artifact = publication.prepare()
                     cloud.save()
+                    publication.confirm(artifact)
                 except Exception:
-                    app.logger.exception("Could not confirm cloud save")
+                    app.logger.warning("Could not confirm cloud save")
                     try:
                         cloud.restore()
+                        publication.confirm(publication.prepare())
                     except Exception:
-                        app.logger.exception("Cloud restore unavailable")
+                        # Fail closed until restart; no export of uncertain local state.
+                        publication.confirmed = None
+                        app.config["STATE_UNCERTAIN"] = True
+                        app.logger.warning("Cloud restore unavailable; restart required")
                     return app.response_class("We could not confirm the save. Reopen the editor and check your content before retrying.", status=503)
+        elif not cloud and request.method == "POST" and request.path.startswith("/founder") and response.status_code < 400:
+            publication.confirm(publication.prepare())
+        if (request.path.startswith("/founder") and response.status_code < 400
+                and (request.method == "POST" or request.endpoint == "dashboard")):
+            publication.notify()
         if request.path.endswith(".html") or request.path == "/":
             response.headers["Cache-Control"] = "no-cache"
         return response
@@ -253,9 +271,17 @@ def create_app(private=None, public=None):
 
     def founder_only():
 
+        if request.endpoint == "static":
+            from public_artifact import PUBLIC_FILES
+            if request.view_args.get("filename") not in PUBLIC_FILES | {"editor.js"}:
+                abort(404)
+
         if not request.path.startswith("/founder"):
 
             return
+
+        if app.config.get("STATE_UNCERTAIN"):
+            abort(503, "Website storage is unavailable. Restart the editor before continuing.")
 
         if request.method == "POST":
 
@@ -308,25 +334,13 @@ def create_app(private=None, public=None):
     @app.route("/")
 
     def home():
-        index = (public / "index.html").read_text(encoding="utf-8")
-        index = re.sub(r'<!-- home slides -->.*?<!-- end home slides -->|<figure class="page-photo">.*?</figure>',
-                       '', index, flags=re.S)
-        stories = (public / "stories.html").read_text(encoding="utf-8")
-        heading = stories.find('<h2 id="news">')
-        if heading == -1:
-            return index
-        start = stories.rfind('<section ', 0, heading)
-        end = stories.find('</section>', heading)
-        if start == -1 or end == -1:
-            return index
-        news = stories[start:end + len('</section>')]
-        shortcut = '<a class="home-news-shortcut" href="#news">News and Events <span aria-hidden="true">↓</span></a>'
-        return index.replace('</main>', news + '\n</main>\n' + shortcut, 1)
+        from public_views import render_public
+        return render_public(public, "index.html")
 
     @app.get("/gallery.html")
     def gallery():
-        saved = (public / "gallery.html").read_text(encoding="utf-8")
-        return saved.replace('</main>', render_template('gallery_groups.html') + '\n</main>', 1)
+        from public_views import render_public
+        return render_public(public, "gallery.html")
 
 
 

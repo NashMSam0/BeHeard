@@ -1,5 +1,10 @@
 # BeHeard Zimbabwe
 
+The static-public / Flask-admin migration is staged separately. See
+[STATIC_PUBLICATION.md](STATIC_PUBLICATION.md) for the public-only export boundary,
+Render configuration, verification results, rollout gates and rollback procedure.
+The live public address has not been switched by this migration.
+
 BeHeard Zimbabwe is a community organisation in Victoria Falls. Its website introduces the people behind the organisation, explains its five programmes and gives visitors ways to enquire about support, volunteering, partnerships and donations.
 
 **Project status · 25 November 2026**  

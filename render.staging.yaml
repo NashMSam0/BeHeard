@@ -1,0 +1,37 @@
+# Static-only staging: never provision another Flask writer against production.
+# Configure the export endpoint/token only after the existing admin has this code.
+services:
+  - type: web
+    name: beheard-public-staging
+    runtime: static
+    branch: staging/static-public-flask-admin
+    autoDeployTrigger: 'off'
+    buildCommand: python build_static.py
+    staticPublishPath: public-build
+    envVars:
+      - key: SKIP_INSTALL_DEPS
+        value: "true"
+      - key: PYTHON_VERSION
+        value: 3.13.9
+      - key: BEHEARD_EXPORT_URL
+        value: https://beheard-zimbabwe.onrender.com/publication/artifact.zip
+      - key: BEHEARD_EXPORT_TOKEN
+        sync: false
+      - key: BEHEARD_PUBLIC_URL
+        value: https://beheard-zimbabwe.onrender.com
+      - key: BEHEARD_STATIC_STAGING
+        value: "1"
+    routes:
+      - type: redirect
+        source: /index.html
+        destination: /
+    headers:
+      - path: /*
+        name: X-Robots-Tag
+        value: noindex, nofollow
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
