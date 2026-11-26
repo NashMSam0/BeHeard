@@ -219,6 +219,10 @@ class PublicationTests(unittest.TestCase):
         self.app.config["ADMIN_ONLY"] = True
         self.assertIn(b"Disallow: /", self.client.get("/robots.txt").data)
         self.assertEqual(self.client.get("/").headers["X-Robots-Tag"], "noindex, nofollow")
+        self.assertEqual(self.client.get("/").location, ORIGIN + "/")
+        self.assertEqual(self.client.get("/stories.html").location, ORIGIN + "/stories.html")
+        self.assertEqual(self.client.get("/healthz").status_code, 200)
+        self.assertEqual(self.client.get("/founder/login").status_code, 200)
 
     def test_build_atomic_and_staging_noindex_and_no_stale_fallback(self):
         output = Path(self.tmp.name) / "build"

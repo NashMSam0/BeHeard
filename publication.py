@@ -5,6 +5,7 @@ import os
 import secrets
 import time
 from urllib.parse import parse_qs, urlsplit
+from urllib.error import HTTPError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from flask import abort, redirect, request, url_for
@@ -72,9 +73,10 @@ class Publication:
             if self.cloud:
                 self.cloud.save()
             self.problem = None
-        except Exception:
+        except Exception as exc:
             # Logs must not contain HTTP exception URLs, bearer tokens or hook keys.
-            self.app.logger.warning("Static deployment request not confirmed; retry is pending")
+            reason = f"HTTP {exc.code}" if isinstance(exc, HTTPError) else type(exc).__name__
+            self.app.logger.warning("Static deployment request not confirmed (%s); retry is pending", reason)
             self.problem = "Your changes are saved. The static deployment request is pending."
             with closing(self.connect(self.app)) as db, db:
                 db.execute("DELETE FROM settings WHERE key='static_submitted'")

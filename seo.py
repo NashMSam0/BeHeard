@@ -49,6 +49,13 @@ def configure_seo(app):
     origin = public_origin()
     app.config["PUBLIC_ORIGIN"] = origin
 
+    @app.before_request
+    def forward_public_pages():
+        if (app.config.get("ADMIN_ONLY") and request.method in ("GET", "HEAD")
+                and request.path in {"/" + path for path in PAGES}
+                and request.host.lower() != urlsplit(origin).netloc.lower()):
+            return redirect(origin + request.path, code=302)
+
     @app.get("/index.html")
     def canonical_home():
         return redirect(origin + "/", code=301)
