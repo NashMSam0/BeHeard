@@ -1,4 +1,5 @@
 """Persist the single-instance editor state outside Render's ephemeral filesystem."""
+from contextlib import closing
 import base64
 import json
 import os
@@ -49,8 +50,8 @@ class CloudState:
         # Use SQLite backup so a snapshot always contains a consistent database.
         with TemporaryDirectory() as tmp:
             backup = Path(tmp) / "state.sqlite3"
-            with sqlite3.connect(self.private / "publisher.sqlite3") as source:
-                with sqlite3.connect(backup) as destination:
+            with closing(sqlite3.connect(self.private / "publisher.sqlite3")) as source:
+                with closing(sqlite3.connect(backup)) as destination:
                     source.backup(destination)
             database = base64.b64encode(backup.read_bytes()).decode("ascii")
         pages = {p.name: p.read_text("utf-8") for p in self.public.glob("*.html")}
@@ -60,3 +61,4 @@ class CloudState:
         if len(rows) != 1:
             raise RuntimeError("Website content changed on another instance")
         self.revision = revision
+
