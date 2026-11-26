@@ -208,6 +208,8 @@ def create_app(private=None, public=None):
 
         db.execute("SELECT 1")
 
+        from uniform_gallery import install_uniform_gallery
+        install_uniform_gallery(public, db)
         publish_page(app, db)
 
 
@@ -577,16 +579,17 @@ def create_app(private=None, public=None):
 
                 source = re.sub(r'<figure class="page-photo">.*?</figure>', '', source, flags=re.S)
 
-            if name == "index.html" and request.form.getlist("remove_slide") and slide_block:
+            if name in ("index.html", "stories.html") and request.form.getlist("remove_slide") and slide_block:
                 removals = set(request.form.getlist("remove_slide"))
                 kept = [image for i, image in enumerate(current_slides) if str(i) not in removals]
                 if kept:
-                    content = '<div class="home-slideshow"><div class="slide-track">' + ''.join(kept) + '</div><button class="slideshow-toggle" type="button">Pause photographs</button></div>'
+                    gallery_class = "home-slideshow uniform-gallery" if name == "stories.html" else "home-slideshow"
+                    content = '<div class="' + gallery_class + '"><div class="slide-track">' + ''.join(kept) + '</div><button class="slideshow-toggle" type="button">Pause photographs</button></div>'
                     replacement = '<!-- home slides -->' + content + '<!-- end home slides -->'
                 else:
                     replacement = ''
                 source = re.sub(r'<!-- home slides -->.*?<!-- end home slides -->', lambda m: replacement, source, flags=re.S)
-            if name == "index.html":
+            if name in ("index.html", "stories.html"):
 
                 uploads = [f for f in request.files.getlist("slides") if f.filename]
 
@@ -610,7 +613,14 @@ def create_app(private=None, public=None):
 
                     source = re.sub(r'<!-- home slides -->.*?<!-- end home slides -->', '', source, flags=re.S)
 
-                    source = source.replace('<section class="lead home">', '<!-- home slides -->'+slides+'<!-- end home slides --><section class="lead home">')
+                    if name == "index.html":
+                        source = source.replace('<section class="lead home">', '<!-- home slides -->'+slides+'<!-- end home slides --><section class="lead home">')
+                    else:
+                        slides = slides.replace('class="home-slideshow"', 'class="home-slideshow uniform-gallery"')
+                        section = re.search(r'<h2>Educational Support</h2>.*?</p>', source, re.S)
+                        if not section:
+                            abort(400, "The Educational Support section could not be found.")
+                        source = source[:section.end()] + '<!-- home slides -->'+slides+'<!-- end home slides -->' + source[section.end():]
 
                 if request.form.get("remove_slides"):
 

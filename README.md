@@ -247,3 +247,12 @@ flowchart TD
 ## Official logo - 26 November 2026
 
 The organisation-supplied JPEG is stored unchanged at `dist/beheard-logo.jpg`. Shared navigation and footer markup in `dist/site.js` use this asset on all public pages, with descriptive alternative text and explicit dimensions. CSS preserves its aspect ratio and white background in both themes; header spacing accommodates the square artwork on desktop and mobile. No AI-generated replacement or recolouring is used. The normal deployment asset refresh copies the logo alongside CSS and JavaScript, preserving founder-edited HTML and photographs.
+
+
+## School uniform story slideshow - 26 November 2026
+
+Three consent-approved photographs accompany the existing Educational Support paragraph on Stories. Optimised JPEGs (`dist/uniform-1.jpg` through `uniform-3.jpg`) preserve the supplied face pixelation and portrait framing. The responsive gallery uses contain sizing, navy/white theme surfaces, previous/next controls, keyboard arrows, swipe scrolling and pause/play. Automatic movement pauses on hover, keyboard focus and hidden tabs; reduced-motion preferences start it paused.
+
+`uniform_gallery.py` installs the gallery once after restoring hosted state, using a private settings marker. Later founder removals are not recreated by restarts. This migration preserves surrounding page edits and published news. In Founder > Website pages > Stories, the founder can remove individual photos, replace the sequence or remove it completely. Images uploaded there stay in the existing durable HTML snapshot workflow. Existing public story wording is retained.
+
+Local checks verified one-time installation, public page delivery and removal surviving a restart. JavaScript syntax and browser layout/controls are checked before deployment.

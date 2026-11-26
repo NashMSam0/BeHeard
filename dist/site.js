@@ -122,13 +122,32 @@ document.querySelectorAll('.home-slideshow').forEach(slideshow => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let paused = reduced.matches;
   let slide = 0;
+  const move = direction => {
+    slide = (Math.round(track.scrollLeft / track.clientWidth) + direction + track.children.length) % track.children.length;
+    track.scrollTo({left: slide * track.clientWidth, behavior: reduced.matches ? 'instant' : 'smooth'});
+  };
+  if (slideshow.classList.contains('uniform-gallery')) {
+    const controls = document.createElement('div');
+    controls.className = 'gallery-controls';
+    const previous = document.createElement('button');
+    previous.type = 'button'; previous.textContent = '←'; previous.setAttribute('aria-label', 'Previous photograph');
+    const next = document.createElement('button');
+    next.type = 'button'; next.textContent = '→'; next.setAttribute('aria-label', 'Next photograph');
+    previous.addEventListener('click', () => move(-1));
+    next.addEventListener('click', () => move(1));
+    controls.append(previous, toggle, next); slideshow.append(controls);
+    track.addEventListener('keydown', event => {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        event.preventDefault(); move(event.key === 'ArrowRight' ? 1 : -1);
+      }
+    });
+  }
   const update = () => { toggle.textContent = paused ? 'Play photographs' : 'Pause photographs'; };
   toggle.addEventListener('click', () => { paused = !paused; update(); });
   reduced.addEventListener('change', () => { paused = reduced.matches; update(); });
   update();
   setInterval(() => {
     if (paused || document.hidden || slideshow.matches(':hover') || slideshow.contains(document.activeElement)) return;
-    slide = (Math.round(track.scrollLeft / track.clientWidth) + 1) % track.children.length;
-    track.scrollTo({left: slide * track.clientWidth, behavior: reduced.matches ? 'instant' : 'smooth'});
+    move(1);
   }, 5500);
 });
