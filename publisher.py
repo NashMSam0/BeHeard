@@ -217,6 +217,8 @@ def create_app(private=None, public=None):
         update_stationary_caption(public, db)
         from impact_stories import install_impact_stories
         install_impact_stories(public, db)
+        from christmas_event import install_christmas_event
+        install_christmas_event(public, db)
         publish_page(app, db)
 
 
