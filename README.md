@@ -2,7 +2,7 @@
 
 BeHeard Zimbabwe is a community organisation in Victoria Falls. Its website introduces the people behind the organisation, explains its five programmes and gives visitors ways to enquire about support, volunteering, partnerships and donations.
 
-**Project status � 25 November 2026**  
+**Project status · 25 November 2026**  
 The seven-page static site is ready for local review. A local founder dashboard supports news publishing. Online payments and form submissions still need implementation. The preferred public address in the project brief is `www.beheardzim.org`. Domain ownership, hosting and a live HTTPS deployment have yet to be verified.
 
 ## Preview on Windows
@@ -21,14 +21,14 @@ Open [the local preview](http://127.0.0.1:8765/) in your browser. Press `Ctrl+C`
 | Page | What it contains |
 | --- | --- |
 | [Home](dist/index.html) | Introduction to BeHeard, featured programmes, stories and ways to contribute. |
-| [About us](dist/about.html) | Mission, vision, values and founder Ashley Mutamiri's profile. Space is reserved for board and team biographies. |
-| [Programmes](dist/programmes.html) | Carlos' Crusaders Scholarships, counselling and psychosocial support, women and community empowerment, child protection and welfare, and community outreach. |
+| [About us](dist/about.html) | Mission, vision, values and founder Ashley Mutamiri’s profile. Space is reserved for board and team biographies. |
+| [Programmes](dist/programmes.html) | Carlos’ Crusaders Scholarships, counselling and psychosocial support, women and community empowerment, child protection and welfare, and community outreach. |
 | [Stories and updates](dist/stories.html) | Three examples from the brief covering a sewing machine, school uniforms and scholarships. The news and events section awaits its first update. |
 | [Get involved](dist/involved.html) | Donation and sponsorship options. Visitors can ask for payment instructions, express interest in volunteering or partnering, and request updates by email. |
 | [Contact](dist/contact.html) | Phone, email, WhatsApp, street address and map links. Counselling enquiries are directed to the team by phone. |
 | [Privacy and safeguarding](dist/privacy.html) | Draft notice covering enquiries, external services and consent for use of stories and photographs. |
 
-The site uses the brief's navy, lime, mustard and white palette, a responsive layout and a mobile menu. General enquiries, volunteer and partnership requests, and requests for updates open a draft in the visitor's email app. The visitor sends the message from that app. The site itself stores no submissions.
+The site uses the brief’s navy, lime, mustard and white palette, a responsive layout and a mobile menu. General enquiries, volunteer and partnership requests, and requests for updates open a draft in the visitor’s email app. The visitor sends the message from that app. The site itself stores no submissions.
 
 ## How to update the current site
 
@@ -60,7 +60,7 @@ The publisher updates the marked section in `dist/stories.html`. Keep both news 
 
 | Area | Next milestone |
 | --- | --- |
-| Domain and hosting | Confirm or register the preferred domain under BeHeard Zimbabwe's control, connect it to static hosting, verify HTTPS and set up regular backups. |
+| Domain and hosting | Confirm or register the preferred domain under BeHeard Zimbabwe’s control, connect it to static hosting, verify HTTPS and set up regular backups. |
 | Staff publishing | Activate the founder password, arrange production publishing and train the founder. The current editor covers news updates and their photographs. |
 | Content and branding | Add the official logo, approved founder and project photos, board and team biographies, confirmed social links and news. Build the photo and video gallery with consent-cleared material. |
 | Donations | Confirm payment methods and connect a provider for once-off and recurring donations. The current Donate button leads to information and an enquiry link. |
@@ -220,3 +220,25 @@ flowchart TD
 
 Free service limits still apply. A free Render instance can sleep. Domain registration, payment-provider details, approved photographs and full enquiry/newsletter form services remain separate unfinished scope items. The current deployment covers the existing public pages and founder content-editing workflow.
 
+
+## Search optimisation - 26 November 2026
+
+`seo.py` adds delivery-time canonical links and Open Graph sharing metadata to all seven public pages. Titles and descriptions reuse the approved HTML wording. This also covers HTML restored from Supabase; saved founder content is not overwritten. `/index.html` redirects permanently to `/` to consolidate the homepage URL.
+
+`/sitemap.xml` lists the seven public canonical URLs and `/robots.txt` advertises it. Founder routes, redirects and errors return `X-Robots-Tag: noindex, nofollow`; authentication remains the actual privacy boundary. Crawlers may fetch the login page to read that instruction. Drafts remain protected by sign-in and are absent from the sitemap.
+
+The canonical origin currently defaults to `https://beheard-zimbabwe.onrender.com`. After domain purchase, DNS and HTTPS verification, set `BEHEARD_PUBLIC_URL` to the chosen HTTPS origin (without a trailing path) and add both root and www hosts to `BEHEARD_DOMAINS`. Redeploy and verify canonical URLs and the sitemap. Do not switch the origin to an unverified domain.
+
+Isolated Flask checks passed for all seven pages, unchanged body wording, canonical and sharing tags, GET/HEAD, XML sitemap parsing, robots sitemap discovery, founder noindex, homepage redirect, 404s and tracking queries. These checks do not measure search rankings or Core Web Vitals.
+
+Google Search Console ownership verification and sitemap submission remain pending domain registration and access to the organisation's Google account. No new public wording or placeholder images were added. Existing descriptive photo fields remain available to the founder; images still need approved uploads.
+
+```mermaid
+flowchart TD
+  Request["Public page request"] --> Stored["Founder-edited HTML"]
+  Stored --> SEO["Canonical and sharing metadata"]
+  Origin["Configured public origin"] --> SEO
+  Origin --> Sitemap["Seven-page sitemap"]
+  SEO --> Response["Public HTML response"]
+  Founder["Founder request"] --> Private["Authentication and noindex header"]
+```

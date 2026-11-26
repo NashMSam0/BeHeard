@@ -154,6 +154,8 @@ def create_app(private=None, public=None):
             if asset.is_file() and (asset.suffix != ".html" or not (public / asset.name).exists()):
                 shutil.copy2(asset, public / asset.name)
     app = Flask(__name__, static_folder=str(public), static_url_path="")
+    from seo import configure_seo
+    configure_seo(app)
 
     app.config.update(DATABASE=private / "publisher.sqlite3", MAX_CONTENT_LENGTH=100*1024*1024,
 
