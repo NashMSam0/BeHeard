@@ -266,3 +266,5 @@ Educational Support now groups its Success Stories into Uniforms and Stationary.
 ### Site navigation and page coverage
 
 Our Board and Team and Gallery are standalone pages. About Us links to the founder and team. Success Stories links to Gallery and News and Events. Our Programmes links to the scholarship and counselling content. Donate and Volunteer and Partner With Us remain linked sections of Donations and Sponsorships, and Privacy Policy is in the footer. The Stationary caption is installed once in the stored Stories page and can be edited in the founder dashboard.
+
+Success Stories includes the sewing machine story and Assisting Vulnerable Families. The programme page links to the sewing story. Videos use standard controls with playback on demand.

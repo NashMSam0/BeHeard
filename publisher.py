@@ -215,6 +215,8 @@ def create_app(private=None, public=None):
         install_education_categories(public, db)
         install_stationary_photos(public, db)
         update_stationary_caption(public, db)
+        from impact_stories import install_impact_stories
+        install_impact_stories(public, db)
         publish_page(app, db)
 
 
