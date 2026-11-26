@@ -7,6 +7,27 @@ APPROVED_CAPTION = "Children wearing uniforms which we provided"
 UNIFORM_DESCRIPTION = CAPTION.removesuffix(".")
 
 
+def install_stationary_photos(public, db):
+    key = "stationary-story-photos-v1"
+    if db.execute("SELECT 1 FROM settings WHERE key=?", (key,)).fetchone():
+        return
+    page = Path(public) / "stories.html"
+    source = page.read_text(encoding="utf-8")
+    anchor = '<summary>Stationary</summary>'
+    if source.count(anchor) != 1:
+        raise RuntimeError("Stationary story placement requires review")
+    gallery = (
+        '<div class="home-slideshow uniform-gallery" role="region" aria-label="Stationary photographs">'
+        '<div class="slide-track" tabindex="0">'
+        '<img src="/stationary-1.jpg" alt="School supplies and shoes laid out on a mat" width="810" height="1080" loading="lazy">'
+        '<img src="/stationary-2.jpg" alt="School supplies being sorted outdoors" width="810" height="1080" loading="lazy">'
+        '</div></div>'
+    )
+    if '/stationary-1.jpg' not in source:
+        page.write_text(source.replace(anchor, anchor + gallery, 1), encoding="utf-8")
+    db.execute("INSERT INTO settings VALUES (?,?)", (key, "installed"))
+
+
 def install_education_categories(public, db):
     key = "education-story-categories-v1"
     if db.execute("SELECT 1 FROM settings WHERE key=?", (key,)).fetchone():
@@ -55,6 +76,9 @@ def install_uniform_gallery(public, db):
         return
     page = Path(public) / "stories.html"
     source = page.read_text(encoding="utf-8")
+    if 'class="education-categories"' in source:
+        db.execute("INSERT INTO settings VALUES (?,?)", (key, "installed"))
+        return
     anchor = "<p>" + CAPTION + "</p>"
     if anchor not in source:
         anchor = "<p>" + APPROVED_CAPTION + "</p>"

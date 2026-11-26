@@ -126,6 +126,63 @@ mode.addEventListener('click', () => {
   try { localStorage.setItem('beheard-theme', document.documentElement.dataset.theme); } catch {}
 });
 document.body.append(mode);
+const education = document.querySelector('.education-categories');
+if (education) {
+  const tablist = document.createElement('div');
+  tablist.className = 'education-tablist';
+  tablist.setAttribute('role', 'tablist');
+  tablist.setAttribute('aria-label', 'Educational Support');
+  const panels = [];
+  const tabs = Array.from(education.querySelectorAll('details'), (details, index) => {
+    const summary = details.querySelector('summary');
+    const label = summary.textContent.trim();
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.textContent = label;
+    tab.id = `education-tab-${index}`;
+    tab.setAttribute('role', 'tab');
+    const panel = document.createElement('div');
+    panel.className = 'education-panel';
+    panel.id = `education-panel-${index}`;
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', tab.id);
+    tab.setAttribute('aria-controls', panel.id);
+    const copy = document.createElement('div');
+    copy.className = 'education-panel-copy';
+    const title = document.createElement('h3');
+    title.textContent = label;
+    copy.append(title);
+    summary.remove();
+    const gallery = details.querySelector('.uniform-gallery');
+    if (gallery) panel.append(gallery);
+    copy.append(...details.childNodes);
+    panel.append(copy);
+    panels.push(panel);
+    tablist.append(tab);
+    tab.addEventListener('click', () => select(index));
+    return tab;
+  });
+  function select(index) {
+    tabs.forEach((tab, position) => {
+      const active = index === position;
+      tab.setAttribute('aria-selected', String(active));
+      tab.tabIndex = active ? 0 : -1;
+      panels[position].hidden = !active;
+    });
+  }
+  tablist.addEventListener('keydown', event => {
+    const index = tabs.indexOf(event.target);
+    const offsets = { ArrowLeft: -1, ArrowRight: 1 };
+    if (!(event.key in offsets)) return;
+    event.preventDefault();
+    const next = (index + offsets[event.key] + tabs.length) % tabs.length;
+    select(next);
+    tabs[next].focus();
+  });
+  education.replaceChildren(tablist, ...panels);
+  education.classList.add('education-tabs');
+  select(0);
+}
 document.querySelectorAll('.home-slideshow').forEach(slideshow => {
   const track = slideshow.querySelector('.slide-track');
   const toggle = slideshow.querySelector('.slideshow-toggle');
