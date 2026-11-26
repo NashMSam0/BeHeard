@@ -161,6 +161,19 @@ absence of local `christmas_event.py` are preserved outside the migration commit
 The migration does not publish those local differences to GitHub. Live export uses
 the existing durable public state rather than overwriting it with a local copy.
 
+## Prepared Render plan
+
+On 26 November 2026, after workspace confirmation, Render successfully planned
+`render.staging.yaml` in My Workspace. The plan proposes exactly one new static
+service, `beheard-public-staging-0tdy`, and no changes to the existing Flask service.
+Automatic Blueprint syncing and Git-triggered deploys are disabled; no custom
+domains, compute workers, disks or databases are included. The plan requires a
+private `BEHEARD_EXPORT_TOKEN`. It has **not** been approved or deployed.
+
+[Review the staging plan](https://dashboard.render.com/blueprint/exs-dc43go49v7es73dorcug/sync/exe-dc43goc9v7es73dordkg).
+The live export route, private token/hook configuration, verified free usage
+allowances, a private backup and hosted verification are still deployment gates.
+
 References: [Render static sites](https://render.com/docs/static-sites),
 [deploy hooks](https://render.com/docs/deploy-hooks),
 [Blueprint specification](https://render.com/docs/blueprint-spec), and
