@@ -1,8 +1,11 @@
 services:
+  # Retain the existing service and all manually managed Supabase/auth variables.
+  # Never change its runtime to static or create a second writer to its state row.
   - type: web
     name: beheard-zimbabwe
     runtime: python
     plan: free
+    autoDeployTrigger: 'off'
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn --workers 1 --threads 1 --timeout 180 --bind 0.0.0.0:$PORT wsgi:app
     healthCheckPath: /healthz
@@ -11,3 +14,52 @@ services:
         value: /tmp/beheard
       - key: PYTHON_VERSION
         value: 3.13.9
+      - key: BEHEARD_STATE_URL
+        sync: false
+      - key: BEHEARD_STATE_API_KEY
+        sync: false
+      - key: BEHEARD_STATE_TOKEN
+        sync: false
+      - key: BEHEARD_PUBLIC_URL
+        value: https://beheard-zimbabwe.onrender.com
+      - key: BEHEARD_EXPORT_TOKEN
+        sync: false
+      - key: BEHEARD_STATIC_DEPLOY_HOOK
+        sync: false
+  # Candidate public site. No custom domains or public traffic switch.
+  - type: web
+    name: beheard-public
+    runtime: static
+    autoDeployTrigger: 'off'
+    buildCommand: python build_static.py
+    staticPublishPath: public-build
+    envVars:
+      - key: SKIP_INSTALL_DEPS
+        value: "true"
+      - key: PYTHON_VERSION
+        value: 3.13.9
+      - key: BEHEARD_EXPORT_URL
+        value: https://beheard-zimbabwe.onrender.com/publication/artifact.zip
+      - key: BEHEARD_EXPORT_TOKEN
+        sync: false
+      - key: BEHEARD_PUBLIC_URL
+        value: https://beheard-zimbabwe.onrender.com
+      - key: BEHEARD_STATIC_STAGING
+        value: "1"
+    routes:
+      - type: redirect
+        source: /index.html
+        destination: /
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+      - path: /*
+        name: X-Robots-Tag
+        value: noindex, nofollow

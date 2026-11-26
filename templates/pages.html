@@ -5,6 +5,7 @@
 <title>Edit {{ names[name] }} | BeHeard Zimbabwe</title><link rel="stylesheet" href="/styles.css"><script src="/editor.js" defer></script></head>
 
 <body class="editor page-editor"><main class="wrap"><p><a href="/founder/">Dashboard</a></p><h1>Edit {{ names[name] }}</h1>
+<p role="status">{{ publication_status }}</p>
 
 <nav aria-label="Pages">{% for page, label in names.items() %}<a href="?page={{ page }}"{% if page == name %} aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}</nav>
 

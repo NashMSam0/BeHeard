@@ -12,6 +12,8 @@
 {% else %}
 <nav><a href="{{ url_for('dashboard') }}">Dashboard</a><a href="/stories.html#news">Public news</a>
 <form method="post" action="{{ url_for('logout') }}">{{ token() }}<button>Sign out</button></form></nav>
+<p role="status">{{ publication_status }}</p>
+<form method="post" action="{{ url_for('retry_publication') }}">{{ token() }}<button>Retry static deployment</button></form>
 {% if view == 'list' %}<p><a class="button" href="/founder/pages">Edit website pages and photographs</a></p><h1>News and Events</h1><p><a class="button" href="{{ url_for('edit',item='new') }}">Create an update</a></p>
 {% for post in rows %}<article class="news-item"><h3><a href="{{ url_for('preview',item=post.id) }}">{{ post.title }}</a></h3>
 <p>{{ post.day }} · {{ 'Draft' if post.live is none else ('Published' if post.live == post.revision else 'Published with draft changes') }}</p></article>
