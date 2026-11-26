@@ -1,0 +1,8 @@
+{% for article in articles %}
+<article class="news-item">
+  <time datetime="{{ article.day }}">{{ article.day }}</time>
+  <h3>{{ article.title }}</h3>
+  {% if article.photo %}<img src="data:image/jpeg;base64,{{ article.photo }}" alt="{{ article.alt }}">{% endif %}
+  <p class="news-text">{{ article.body }}</p>
+</article>
+{% endfor %}

@@ -1,0 +1,25 @@
+<!doctype html>
+
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Edit {{ names[name] }} | BeHeard Zimbabwe</title><link rel="stylesheet" href="/styles.css"><script src="/editor.js" defer></script></head>
+
+<body class="editor page-editor"><main class="wrap"><p><a href="/founder/">Dashboard</a></p><h1>Edit {{ names[name] }}</h1>
+
+<nav aria-label="Pages">{% for page, label in names.items() %}<a href="?page={{ page }}"{% if page == name %} aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}</nav>
+
+<div class="editing-layout"><form method="post" enctype="multipart/form-data"><p>Edit the descriptions below. Category names and headings are protected.</p>
+
+<input type="hidden" name="csrf" value="{{ session.csrf }}"><input type="hidden" name="page" value="{{ name }}"><input type="hidden" name="version" value="{{ version }}">
+
+{% for field in fields %}<label>{{ field.label }}<textarea name="text_{{ loop.index0 }}" required rows="4">{{ field.text }}</textarea></label>{% endfor %}
+
+<fieldset><legend>Page photograph</legend>{% if current_photo %}<img class="current-photo" src="{{ current_photo }}" alt="Current page photograph">{% endif %}<label>Add or replace photograph<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
+
+<label>Describe the photograph<input name="alt"></label><label><input type="checkbox" name="remove">Remove page photograph</label></fieldset>
+
+{% if name == 'index.html' %}<fieldset><legend>Scrolling homepage photographs</legend>{% if slide_previews %}<p>Select the photographs you want to remove, then save changes.</p><div class="current-slides">{% for photo in slide_previews %}<label><img class="current-photo" src="{{ photo }}" alt="Homepage photograph {{ loop.index }}"><input type="checkbox" name="remove_slide" value="{{ loop.index0 }}"> Remove photograph {{ loop.index }}</label>{% endfor %}</div>{% endif %}<p>Choose up to six approved photographs. Keep the total upload below 100 MB. They appear in selection order above the homepage introduction.</p><label>Add or replace photo sequence<input type="file" name="slides" multiple accept="image/jpeg,image/png,image/webp"></label><div id="slide-descriptions" aria-live="polite"></div><label><input type="checkbox" name="remove_slides">Remove homepage sequence</label></fieldset>{% endif %}
+
+<button>Save changes</button></form>
+
+<aside class="page-preview"><h2>Where your text appears</h2><p>The preview shows the saved page. Save changes to refresh it.</p><iframe title="{{ names[name] }} page preview" src="/{{ name }}"></iframe><p><a href="/{{ name }}" target="_blank" rel="noopener">Open {{ names[name] }} page</a></p></aside></div></main></body></html>

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: beheard-zimbabwe
+    runtime: python
+    plan: 0.5c-512mb
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --workers 1 --threads 1 --timeout 180 --bind 0.0.0.0:$PORT wsgi:app
+    healthCheckPath: /healthz
+    disk:
+      name: beheard-data
+      mountPath: /var/data/beheard
+      sizeGB: 1
+    envVars:
+      - key: BEHEARD_DATA_DIR
+        value: /var/data/beheard
+      - key: PYTHON_VERSION
+        value: 3.13.9

@@ -1,0 +1,181 @@
+# BeHeard Zimbabwe
+
+BeHeard Zimbabwe is a community organisation in Victoria Falls. Its website introduces the people behind the organisation, explains its five programmes and gives visitors ways to enquire about support, volunteering, partnerships and donations.
+
+**Project status · 25 November 2026**  
+The seven-page static site is ready for local review. A local founder dashboard supports news publishing. Online payments and form submissions still need implementation. The preferred public address in the project brief is `www.beheardzim.org`. Domain ownership, hosting and a live HTTPS deployment have yet to be verified.
+
+## Preview on Windows
+
+With Python 3 installed, run these commands in PowerShell.
+
+```powershell
+cd "C:\Users\hp\Documents\BeHeardProject"
+python -m http.server 8765 --bind 127.0.0.1 --directory dist
+```
+
+Open [the local preview](http://127.0.0.1:8765/) in your browser. Press `Ctrl+C` in PowerShell to stop the server. Serve `dist` as the site root because navigation and asset URLs start with `/`.
+
+## What visitors can use today
+
+| Page | What it contains |
+| --- | --- |
+| [Home](dist/index.html) | Introduction to BeHeard, featured programmes, stories and ways to contribute. |
+| [About us](dist/about.html) | Mission, vision, values and founder Ashley Mutamiri’s profile. Space is reserved for board and team biographies. |
+| [Programmes](dist/programmes.html) | Carlos’ Crusaders Scholarships, counselling and psychosocial support, women and community empowerment, child protection and welfare, and community outreach. |
+| [Stories and updates](dist/stories.html) | Three examples from the brief covering a sewing machine, school uniforms and scholarships. The news and events section awaits its first update. |
+| [Get involved](dist/involved.html) | Donation and sponsorship options. Visitors can ask for payment instructions, express interest in volunteering or partnering, and request updates by email. |
+| [Contact](dist/contact.html) | Phone, email, WhatsApp, street address and map links. Counselling enquiries are directed to the team by phone. |
+| [Privacy and safeguarding](dist/privacy.html) | Draft notice covering enquiries, external services and consent for use of stories and photographs. |
+
+The site uses the brief’s navy, lime, mustard and white palette, a responsive layout and a mobile menu. General enquiries, volunteer and partnership requests, and requests for updates open a draft in the visitor’s email app. The visitor sends the message from that app. The site itself stores no submissions.
+
+## How to update the current site
+
+The files in `dist/` are the editable website. It uses HTML, CSS and plain JavaScript and runs without a build step or database.
+
+| To change | Edit |
+| --- | --- |
+| Page text, stories, programme details or page-specific contact buttons | The relevant HTML file listed above |
+| Shared navigation, footer contact details or mobile menu behaviour | [dist/site.js](dist/site.js) |
+| Colours, typography, illustrations, spacing or mobile layouts | [dist/styles.css](dist/styles.css) |
+
+### Founder news publishing
+
+Ashley Mutamiri is the sole dashboard account. From the project folder on Windows, install the dependencies if needed and let Ashley enter her password at the private terminal prompt.
+
+```powershell
+python -m pip install -r requirements.txt
+python publisher.py setup
+python publisher.py serve
+```
+
+Open <http://127.0.0.1:8767/founder/> on this computer. If the editor is already running, just run the setup command. Re-running setup changes the password and invalidates existing signed-in sessions. Local operating-system access to the project and its private files is administrative access.
+
+Choose **Create an update**, enter the title, date and text, and optionally add an approved photograph and description. **Save draft and preview** keeps the changes private. **Publish update** places that revision in News and Events. Later edits stay private until published. **Take down** removes the public version and retains the draft.
+
+The publisher updates the marked section in `dist/stories.html`. Keep both news markers when editing that file. The static preview on port 8765 and the public view on port 8767 read the same file. For hosting, deploy only `dist/` after publishing. The local dashboard and its database stay separate from the public files. Private drafts, photos, published revisions and credentials live in `.beheard/publisher.sqlite3`. Back up that directory privately while the editor is stopped. Remote founder access will require hosting the editor with HTTPS and persistent private storage or providing it on the founder's computer.
+
+## Remaining work
+
+| Area | Next milestone |
+| --- | --- |
+| Domain and hosting | Confirm or register the preferred domain under BeHeard Zimbabwe’s control, connect it to static hosting, verify HTTPS and set up regular backups. |
+| Staff publishing | Activate the founder password, arrange production publishing and train the founder. The current editor covers news updates and their photographs. |
+| Content and branding | Add the official logo, approved founder and project photos, board and team biographies, confirmed social links and news. Build the photo and video gallery with consent-cleared material. |
+| Donations | Confirm payment methods and connect a provider for once-off and recurring donations. The current Donate button leads to information and an enquiry link. |
+| Enquiries and subscriptions | Connect general enquiry and volunteer forms, a confidential counselling appointment request process and newsletter subscriptions. |
+| Launch review | Approve the privacy and safeguarding notice against the final services and confirm that enquiries reach the right staff. |
+
+## Checks completed
+
+On 25 November 2026, all seven HTML pages, the stylesheet and the shared script returned HTTP 200 from a local static server. Internal page links and section anchors resolved, and `node --check dist/site.js` passed. These checks covered the local files. Live hosting and delivery through external contact services remain unverified.
+
+
+## Website editing and appearance
+
+The founder dashboard now includes **Edit website pages and photographs**. Select a page, edit its plain text fields and save. These page edits publish immediately to the local website. A version check rejects edits when someone else has changed the page since it was opened. News continues to use its separate draft, preview and publish workflow.
+
+Each page supports one optional photograph displayed as a wide moving photo band at the bottom. Uploading a replacement replaces the current page photograph. A description is required. The remove checkbox removes it. Reduced-motion preferences stop the animation. This is the first photo placement available in the editor. Placement within individual sections and multiple hero slides still require implementation.
+
+The public site has a persistent Light mode / Dark mode button. The palette uses navy, lime, mustard and white across contrasting sections. Public text still follows the approved brief. New text entered by the founder becomes organisation-approved content.
+
+## Architecture
+
+The public website is static HTML, CSS and JavaScript. Flask supplies the private local editing interface. SQLite stores news drafts, published news revisions and founder credentials. Page edits write directly to the HTML files. Page photographs are validated, resized and embedded as JPEG data. Passwords use salted hashes.
+
+```mermaid
+flowchart TD
+  Founder["Founder browser"] --> Editor["Flask editor on port 8767"]
+  Editor --> Auth["Session and CSRF validation"]
+  Auth --> News["News drafts in SQLite"]
+  Auth --> Pages["Page text and photo editor"]
+  News --> Publish["Publish news revision"]
+  Publish --> Files["Public dist files"]
+  Pages --> Files
+  Visitor["Visitor browser"] --> Files
+```
+
+```mermaid
+flowchart TD
+  Draft["News draft"] --> Preview["Private preview"]
+  Preview --> Publish["Publish"]
+  Publish --> Public["Public news"]
+  Public --> Withdraw["Take down"]
+  Withdraw --> Draft
+  Public --> Edit["Edit draft"]
+  Edit --> Preview
+```
+
+| File or folder | Responsibility |
+| --- | --- |
+| publisher.py | Founder login, sessions, news workflow, page editing and publishing |
+| templates/founder.html | News dashboard and sign-in |
+| templates/pages.html | Page text and photograph editing |
+| templates/articles.html | Escaped public news markup |
+| dist/ | Public website files for static hosting |
+| .beheard/ | Private SQLite database and credentials |
+| requirements.txt | Python dependencies |
+
+Only publish the dist folder. The editor currently runs on the local computer. Production remote editing still needs HTTPS, persistent private storage and a deployment connection. Back up both dist and .beheard before changes. Restart the Python editor after changing its source.
+
+
+### Contrast correction
+
+Buttons use explicit foreground and background pairs instead of the document text colour as their background. Hero and dark-mode buttons use navy text on lime, including hover states. The same correction covers founder buttons, donation links and focus outlines.
+
+### Friendly page editor and homepage sequence
+
+The editor uses Home, About, Programmes, Stories, Donations and volunteering, Contact and Privacy as page labels. It exposes paragraph descriptions grouped by their nearest heading. Category names, headings, values and navigation are protected. Published news remains managed through the news workflow. A saved-page preview appears beside the editing form.
+
+Home supports up to six uploaded photographs with a description for each, displayed above the introduction. The sequence advances every 5.5 seconds and has a play/pause button. It pauses while hovered, focused or in a hidden tab. Reduced-motion preferences start it paused. These images are supplied by the founder. Existing page photographs remain available as a separate feature.
+
+
+### News layout and two-colour palette
+
+Navy and white are the main site colours. Light mode uses white and pale blue surfaces with navy text. Dark mode uses navy surfaces with light text. Lime remains on key buttons and small accents. Full-width mustard and green section fills have been removed.
+
+News photographs fit a consistent 16:10 crop with softened corners. On wider screens, each photograph sits beside its article text; on phones it stacks within the article. Existing published articles receive the layout through shared CSS. News sections use the available page width.
+
+
+### Photo upload allowance
+
+The founder editor accepts requests up to 100 MiB, allowing six homepage photographs and an optional page photograph in one save. Use a total below 100 MB to leave room for form data. Images are still validated, resized and converted to JPEG. Requests above the limit receive a styled explanation and a return link. Production hosting must allow the same request size.
+
+
+### Homepage photo descriptions
+
+Selecting homepage photos now displays a thumbnail and optional description for each file. Blank descriptions save as empty alternative text. Add descriptions for meaningful photographs to make them accessible to screen-reader users. The older multiline description input remains accepted for submissions from already-open editor tabs.
+
+
+### Selected Canva design
+
+Visual reference: https://canva.link/xmgyi6h8urrufcp (DAHb85YZSYA, Brand Color Dark/Light Theme). The website adapts its bold sans-serif typography, generous spacing, rounded panels and pill-shaped buttons. The homepage sequence uses uploaded photographs within a rounded frame. The large decorative lime image panel in the reference is replaced by actual uploaded photography and content. The founder editing workflow, public copy, theme switch, navigation and photo controls remain available.
+
+
+### Choosing and removing photographs
+
+The page editor displays the current page photograph and all saved homepage slides. Select individual homepage photographs for removal and save changes. Selecting every saved slide removes the sequence. Uploading a new sequence replaces the old sequence; removing the whole sequence takes precedence. The page photograph can be replaced using the file chooser or removed using its checkbox. News photographs are managed within the corresponding news draft.
+
+### Verification on 26 November 2026
+
+Isolated tests passed for founder sign-in, description editing, protected headings, page photo upload/replacement/removal, homepage sequence upload, individual slide removal, full sequence removal, invalid upload rejection, visitor edit blocking, private-file protection, news draft privacy, HTML escaping, publication, correction, stale revision rejection, withdrawal and logout. Tests used temporary copies and generated image data that was discarded after testing.
+
+Browser checks covered the homepage at phone and desktop widths, light and dark modes, and opening mobile navigation. The phone homepage had no horizontal overflow. The editor image policy now permits blob URLs used by selected-photo thumbnails. Hosting remains pending a provider and cost decision.
+
+
+## Render deployment
+
+The repository includes render.yaml and wsgi.py for one paid Python web service with a 1 GB persistent disk. Confirm the price shown by Render before provisioning.
+
+1. Upload the source to a private GitHub repository, excluding .beheard, .env files and local credentials.
+2. In Render, create a Blueprint from that repository and review render.yaml.
+3. Deploy after approving the service and disk cost.
+4. In the Render service Shell, run python publisher.py setup. The founder enters a new password privately.
+5. Open the service URL and /founder/. Check /healthz, public pages, sign-in and publication.
+
+BEHEARD_DATA_DIR places private credentials and SQLite in /var/data/beheard/private and public editable HTML in /var/data/beheard/public. Only the public subdirectory is served. Code redeploys refresh scripts and styles; previously edited HTML is retained. Deliberate HTML layout changes require a migration or a backed-up manual merge into the persistent pages.
+
+RENDER_EXTERNAL_HOSTNAME allows the generated host and enables Secure session cookies. Add custom domains using BEHEARD_DOMAINS, separated by commas. Render handles HTTPS. Production uses one Gunicorn worker and one request thread to serialize filesystem edits. The private database is created afresh on Render; the local founder password is never uploaded.
+
+Back up the private database using SQLite's backup API and copy the persistent public folder together. Store backups outside this disk and test restoring them. Credentials remain outside Git.

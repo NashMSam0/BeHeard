@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Founder dashboard | BeHeard Zimbabwe</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="editor"><main class="wrap"><p class="kicker">BeHeard Zimbabwe · Ashley Mutamiri</p>
+{% macro token() %}<input type="hidden" name="csrf" value="{{ session.csrf }}">{% endmacro %}
+{% if view == 'login' %}
+<h1>Founder sign-in</h1>
+{% if ready %}<form method="post">{{ token() }}
+<label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}<button>Sign in</button></form>
+{% else %}<p>Set the founder password privately on this computer to activate sign-in.</p>{% endif %}
+{% else %}
+<nav><a href="{{ url_for('dashboard') }}">Dashboard</a><a href="/stories.html#news">Public news</a>
+<form method="post" action="{{ url_for('logout') }}">{{ token() }}<button>Sign out</button></form></nav>
+{% if view == 'list' %}<p><a class="button" href="/founder/pages">Edit website pages and photographs</a></p><h1>News and Events</h1><p><a class="button" href="{{ url_for('edit',item='new') }}">Create an update</a></p>
+{% for post in rows %}<article class="news-item"><h3><a href="{{ url_for('preview',item=post.id) }}">{{ post.title }}</a></h3>
+<p>{{ post.day }} · {{ 'Draft' if post.live is none else ('Published' if post.live == post.revision else 'Published with draft changes') }}</p></article>
+{% else %}<p>No updates yet.</p>{% endfor %}
+{% elif view == 'edit' %}<h1>{{ 'Edit update' if row else 'New update' }}</h1><form method="post" enctype="multipart/form-data">{{ token() }}
+<input type="hidden" name="revision" value="{{ row.revision if row else 0 }}">
+<label>Title<input name="title" required maxlength="180" value="{{ row.title if row }}"></label>
+<label>Date<input type="date" required name="day" value="{{ row.day if row else today }}"></label>
+<label>Text<textarea required maxlength="30000" name="body" rows="9">{{ row.body if row }}</textarea></label>
+<label>Approved photograph (optional)<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
+{% if row and row.photo %}<label><input type="checkbox" name="remove_photo"> Remove current photograph</label>{% endif %}
+<label>Photo description<input name="alt" maxlength="300" value="{{ row.alt if row }}"></label>
+<button>Save draft and preview</button></form>
+{% else %}<h1>Private preview</h1>{% with articles=[row] %}{% include 'articles.html' %}{% endwith %}
+<div class="actions"><a href="{{ url_for('edit',item=row.id) }}">Edit draft</a>
+<form method="post" action="{{ url_for('status',item=row.id) }}">{{ token() }}<input type="hidden" name="revision" value="{{ row.revision }}">
+<button name="action" value="publish">Publish update</button>
+{% if live %}<button name="action" value="withdraw">Take down</button>{% endif %}</form></div>
+{% endif %}{% endif %}</main></body></html>
