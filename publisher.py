@@ -236,6 +236,8 @@ def create_app(private=None, public=None):
         install_birthdays(public, db)
         from birthday_update import install_birthday_update
         install_birthday_update(public, db)
+        from birthday_update import install_third_birthday
+        install_third_birthday(public, db)
         from programme_story_links import install_programme_story_links
         install_programme_story_links(public, db)
 
