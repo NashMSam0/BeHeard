@@ -114,6 +114,27 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         return response.location.rsplit("/", 1)[1]
 
+    def test_owner_recovery_and_submission_trash(self):
+        csrf = self.login()
+        with closing(connect(self.app)) as db, db:
+            db.execute("INSERT INTO submissions (id,kind,created,name,email,phone,message,consent,consent_version,fingerprint) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                ("trash-test", "enquiry", "2026-11-27", "Test", "test@example.org", "", "Test message", "yes", "1", "test"))
+        self.assertEqual(self.client.post("/founder/submissions/trash-test/delete", data={"csrf": csrf}).status_code, 302)
+        self.assertNotIn(b"Test message", self.client.get("/founder/submissions").data)
+        self.assertIn(b"Test message", self.client.get("/founder/submissions?trash=1").data)
+        self.client.post("/founder/submissions/trash-test/restore", data={"csrf": csrf})
+        self.assertIn(b"Test message", self.client.get("/founder/submissions").data)
+        self.client.post("/founder/logout", data={"csrf": csrf})
+        self.client.get("/founder/recover")
+        with self.client.session_transaction(path="/founder/") as state:
+            csrf = state["csrf"]
+        code = "owner-recovery-test-" + "x" * 30
+        with patch.dict(os.environ, {"BEHEARD_OWNER_RECOVERY_HASH": generate_password_hash(code)}):
+            response = self.client.post("/founder/recover", data={"csrf": csrf, "recovery_code": code,
+                "new_password": "replacement-password-long", "confirm_password": "replacement-password-long"})
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("password_changed", response.location)
+
     def test_admin_password_change(self):
         csrf = self.login()
         changed = "new-password-" + "z" * 25
