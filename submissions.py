@@ -127,6 +127,6 @@ def configure_submissions(app, connect, cloud):
     def form_privacy(response):
         if request.path.startswith("/forms/"):
             response.headers.update({"Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow",
-                "Referrer-Policy": "no-referrer", "X-Frame-Options": "DENY",
+                "Referrer-Policy": "same-origin", "X-Frame-Options": "DENY",
                 "Content-Security-Policy": "default-src 'self'; style-src 'self'; form-action 'self'; frame-ancestors 'none'"})
         return response
