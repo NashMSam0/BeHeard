@@ -1,34 +1,34 @@
-<section id="payment-methods" class="block tinted">
-  <div class="wrap">
-    <h2>Make a donation</h2>
-    <p>Choose a payment method for a once-off or monthly donation.</p>
-    <div class="donation-methods">
-      <article class="donation-method">
-        <h3>Bank transfer</h3>
-        {% if bank.get('account_name') and bank.get('account_number') and bank.get('bank_name') and bank.get('currency') %}
-        <dl>
-          {% for key, label in [('bank_name', 'Bank'), ('account_name', 'Account name'), ('account_number', 'Account number'), ('branch', 'Branch'), ('bank_address', 'Bank address'), ('currency', 'Currency'), ('swift', 'SWIFT code'), ('reference', 'Reference')] %}
-          {% if bank.get(key) %}<dt>{{ label }}</dt><dd>{{ bank[key] }}</dd>{% endif %}
-          {% endfor %}
-        </dl>
-        <p class="bank-name-note"><strong>Please note</strong> — the bank beneficiary name appears as Ashley Sibanda.</p>
-        <p>For monthly donations, arrange a standing order with your bank using these details.</p>
-        {% else %}<p>Receiving details will be added once confirmed.</p>{% endif %}
-      </article>
-      <article class="donation-method">
-        <h3>EcoCash</h3>
-        {% if ecocash.get('recipient') and ecocash.get('number')  %}
-        <dl><dt>Registered name</dt><dd>{{ ecocash.recipient }}</dd><dt>{{ 'Merchant code' if ecocash.get('merchant') else 'Receiving number' }}</dt><dd>{{ ecocash.number }}</dd>{% if ecocash.get("currency") %}<dt>Currency</dt><dd>{{ ecocash.currency }}</dd>{% endif %}</dl>
-        <p>For monthly support, repeat your donation each month.</p>
-        {% else %}<p>Receiving details will be added once confirmed.</p>{% endif %}
-      </article>
-      <article class="donation-method">
-        <h3>PayPal</h3>
-        {% if paypal.get('once_off_url') %}<p><a class="inline-link" href="{{ paypal.once_off_url }}">Donate once with PayPal</a></p>{% endif %}
-        {% if paypal.get('monthly_url') %}<p><a class="inline-link" href="{{ paypal.monthly_url }}">Donate monthly with PayPal</a></p>{% endif %}
-        {% if not paypal.get('once_off_url') and not paypal.get('monthly_url') %}<p>The donation link will be added once confirmed.</p>{% endif %}
-      </article>
-    </div>
-    <p>For donation enquiries, <a href="mailto:info@beheardzim.org?subject=Donation%20enquiry">email info@beheardzim.org</a>.</p>
-  </div>
-</section>
+<section id="payment-methods" class="block tinted">
+  <div class="wrap">
+    <h2>Make a donation</h2>
+    <p>Choose a payment method for a once-off or monthly donation.</p>
+    <div class="donation-methods">
+      <article class="donation-method">
+        <h3>Bank transfer</h3>
+        {% if bank.get('account_name') and bank.get('account_number') and bank.get('bank_name') and bank.get('currency') %}
+        <dl>
+          {% for key, label in [('bank_name', 'Bank'), ('account_name', 'Account name'), ('account_number', 'Account number'), ('branch', 'Branch'), ('bank_address', 'Bank address'), ('currency', 'Currency'), ('swift', 'SWIFT code'), ('reference', 'Reference')] %}
+          {% if bank.get(key) %}<dt>{{ label }}</dt><dd>{{ bank[key] }}</dd>{% endif %}
+          {% endfor %}
+        </dl>
+        <p class="bank-name-note"><strong>Please note</strong> â€” the bank beneficiary name appears as Ashley Sibanda.</p>
+        <p>For monthly donations, arrange a standing order with your bank using these details.</p>
+        {% else %}<p>Receiving details will be added once confirmed.</p>{% endif %}
+      </article>
+      <article class="donation-method">
+        <h3>EcoCash</h3>
+        {% if ecocash.get('recipient') and ecocash.get('number')  %}
+        <dl><dt>Registered name</dt><dd>{{ ecocash.recipient }}</dd><dt>{{ 'Merchant code' if ecocash.get('merchant') else 'Receiving number' }}</dt><dd>{{ ecocash.number }}</dd>{% if ecocash.get("currency") %}<dt>Currency</dt><dd>{{ ecocash.currency }}</dd>{% endif %}</dl>
+        <p>For monthly support, repeat your donation each month.</p>
+        {% else %}<p>Receiving details will be added once confirmed.</p>{% endif %}
+      </article>
+      <article class="donation-method">
+        <h3>PayPal</h3>
+        {% if paypal.get('once_off_url') %}<p><a class="inline-link" href="{{ paypal.once_off_url }}">Donate once with PayPal</a></p>{% endif %}
+        {% if paypal.get('monthly_url') %}<p><a class="inline-link" href="{{ paypal.monthly_url }}">Donate monthly with PayPal</a></p>{% endif %}
+        {% if not paypal.get('once_off_url') and not paypal.get('monthly_url') %}<p>The donation link will be added once confirmed.</p>{% endif %}
+      </article>
+    </div>
+    <p>For donation enquiries, <a href="mailto:info@beheardzim.org?subject=Donation%20enquiry">email info@beheardzim.org</a>.</p>
+  </div>
+</section>
