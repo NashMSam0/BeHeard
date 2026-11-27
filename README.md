@@ -332,3 +332,5 @@ EcoCash receiving number is configured under Ashley Mutamiri. Currency remains u
 Donation flow in preparation includes once-off/monthly choices, suggested USD amounts, custom amount validation and a modal with payment-method instructions. Bank/EcoCash transfers are completed by donors externally. Card checkout and automatic monthly PayPal collection require an eligible connected provider. Personal and card data are not collected by this flow.
 
 Donate Now links across all public pages open the amount/frequency popup, then show bank and EcoCash transfer instructions. Escape/close dismiss it and Back returns to the amount. These are donor-completed transfers. Card processing and automatic PayPal collection remain pending provider setup.
+
+Mukuru/WorldRemit/other transfer enquiries open Ashley’s confirmed WhatsApp number. The expanded website privacy notice describes the current donation flow, contact services, hosting, editor snapshots, theme local storage and founder session cookie. No optional tracking has been enabled. Organisation retention schedules and a legal review of the notice remain to be confirmed before adding personal-data forms or analytics.

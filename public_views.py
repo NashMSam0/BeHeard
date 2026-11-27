@@ -10,6 +10,8 @@ def render_public(public, name):
     document = (public / name).read_text(encoding="utf-8")
     from donations import render_donations
     document = document.replace("</body>", render_donations() + "\n</body>", 1)
+    if name == "privacy.html":
+        return document.replace("</main>", render_template("privacy_details.html") + "\n</main>", 1)
     if name == "gallery.html":
         return document.replace('</main>', render_template('gallery_groups.html') + '\n</main>', 1)
     if name != "index.html":
