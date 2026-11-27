@@ -1,14 +1,55 @@
 # BeHeard Zimbabwe
 
-The static-public / Flask-admin migration is staged separately. See
-[STATIC_PUBLICATION.md](STATIC_PUBLICATION.md) for the public-only export boundary,
-Render configuration, verification results, rollout gates and rollback procedure.
-The live public address has not been switched by this migration.
+## Current deployment — 27 November 2026
 
-BeHeard Zimbabwe is a community organisation in Victoria Falls. Its website introduces the people behind the organisation, explains its five programmes and gives visitors ways to enquire about support, volunteering, partnerships and donations.
+- Public website — https://beheard-public.onrender.com/
+- Founder dashboard — https://beheard-zimbabwe.onrender.com/founder/
+- Public pages on the former address redirect to the static site.
+- Public static hosting stays available independently of Flask inactivity. The free admin service can sleep.
+- Supabase holds revision-checked durable snapshots of pages, the private database, drafts and credentials.
+- Automatic static publication through the Render deploy hook is verified.
+- The public build contains nine pages, approved media, CSS, JavaScript, canonical/Open Graph metadata, robots.txt and sitemap.xml.
+- Private routes, drafts, database files and server credentials are excluded from public artifacts.
 
-**Project status · 25 November 2026**  
-The seven-page static site is ready for local review. A local founder dashboard supports news publishing. Online payments and form submissions still need implementation. The preferred public address in the project brief is `www.beheardzim.org`. Domain ownership, hosting and a live HTTPS deployment have yet to be verified.
+See [STATIC_PUBLICATION.md](STATIC_PUBLICATION.md) for publication security and failure handling.
+
+## Content completed
+
+The official logo, founder biography and portrait, uniforms and stationery, sewing story, family housing media, family donation story, Christmas posters and scholarship birthday photographs are published. Family stories have Housing and Donation categories. Programme sections link to matching stories. The gallery contains the birthday photographs and excludes the founder portrait.
+
+## Editing and deployment
+
+The authenticated Flask founder dashboard supports draft/preview/publish/take-down for news and immediate saves for website page edits. Hosted HTML and SQLite restore from Supabase at startup. Durable saves must succeed before an export is confirmed and a static deployment is requested.
+
+Hosted snapshots contain current page content. Repository HTML edits can be superseded by restoration. Approved deployment changes use one-time migrations with settings markers. Shared CSS, JavaScript, templates and allowlisted media are repository-managed.
+
+Use python publisher.py serve for a complete local preview on port 8767. A plain static preview of dist omits runtime gallery rendering and SEO. Use python publisher.py setup only to establish or reset a local founder password.
+
+Production configuration is recorded in render.yaml. Staging configuration is in render.staging.yaml. Manage secrets through Render Environment and preserve existing Supabase/authentication settings. Never commit credentials, snapshots, private SQLite files or tokens.
+
+## Verification completed
+
+The publication suite passed 20 tests during rollout. Live checks covered nine public pages and 25 original assets, metadata and sitemap, private-route rejection, old-address redirects, login availability and automatic deploy-hook delivery. Subsequent content/layout changes were checked on the live site.
+
+Run python -m unittest discover -s tests -q for publication regression checks. Verify applicable browser behavior and Render deployment status after changes.
+
+## Remaining work
+
+| Area | Remaining action |
+| --- | --- |
+| Custom domain | Confirm ownership/DNS access for www.beheardzim.org, connect it and verify HTTPS before updating canonical URLs. |
+| Board and team | Supply approved biographies and photographs for additional members. |
+| Counselling story | Supply approved content before adding its programme success-story link. |
+| Donations | Confirm a provider and payment methods if online once-off/recurring payments are required. Current links provide information and contact options. |
+| Enquiries/newsletter | Agree services for direct form submissions, appointment requests and subscriptions. Current enquiry actions use contact/email links. |
+| Launch administration | Founder sign-in/training, privacy and safeguarding review, and confirmation that contact channels reach responsible staff. |
+| Search Console | Verify ownership and submit the sitemap when domain and organisation Google-account access are available. |
+
+The deployment uses the existing free hosting arrangement. Domain purchases and paid services require an explicit decision.
+
+## Earlier implementation notes
+
+The dated notes below record earlier implementation stages. The current deployment and remaining-work sections above supersede their old status claims.
 
 ## Preview on Windows
 
