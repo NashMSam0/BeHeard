@@ -203,11 +203,14 @@ def create_app(private=None, public=None):
         db.execute("INSERT OR IGNORE INTO settings VALUES ('secret',?)", (secrets.token_hex(32),))
 
         bootstrap = os.environ.get("BEHEARD_FOUNDER_HASH")
-        if bootstrap and not db.execute("SELECT 1 FROM settings WHERE key='password'").fetchone():
+        stored_generation = db.execute("SELECT value FROM settings WHERE key='generation'").fetchone()
+        configured_generation = os.environ.get("BEHEARD_FOUNDER_GENERATION")
+        if bootstrap and configured_generation and (not stored_generation or stored_generation[0] != configured_generation):
             db.executemany("INSERT OR REPLACE INTO settings VALUES (?,?)", [
                 ("password", bootstrap),
                 ("generation", os.environ["BEHEARD_FOUNDER_GENERATION"]),
                 ("secret", os.environ["BEHEARD_SESSION_SECRET"])])
+            db.execute("DELETE FROM failures")
         app.secret_key = db.execute("SELECT value FROM settings WHERE key='secret'").fetchone()[0]
 
         db.execute("SELECT 1")
