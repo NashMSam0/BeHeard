@@ -409,3 +409,16 @@ body > #payment-methods{padding:0;background:transparent}body > #payment-methods
 .nav-donate,.donation-continue,.donation-amounts button,.inline-link,.gallery-controls button{transition:transform 180ms ease,box-shadow 180ms ease}
 @media(hover:hover){.nav-donate:hover,.donation-continue:hover,.donation-amounts button:hover,.gallery-controls button:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgb(15 35 55 / 15%)}.inline-link:hover{transform:translateX(3px)}}
 @media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}.nav-donate,.donation-continue,.donation-amounts button,.inline-link,.gallery-controls button{transition:none}}
+
+body[data-page=home] main>section:first-child{position:relative;isolation:isolate}
+.community-background{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.5;z-index:0}
+body[data-page=home] main>section:first-child>.wrap{position:relative;z-index:1}
+.programme-depth{transform-style:preserve-3d;transition:transform 200ms ease,box-shadow 200ms ease}
+.programme-depth:hover{box-shadow:0 12px 26px rgb(10 25 45 / 12%)}
+.gallery-depth-image{transition:transform 350ms ease,filter 350ms ease}
+@media(hover:hover){.gallery-grid a:hover .gallery-depth-image{transform:scale(1.025);filter:brightness(1.04)}}
+.donation-progress{height:5px;background:var(--rule);border-radius:8px;margin:0 38px 24px 0;overflow:hidden}
+.donation-progress span{display:block;height:100%;width:40%;background:#8eaf42;transition:width 350ms ease}
+.payment-step-active .donation-progress span{width:100%}
+@media(max-width:760px){body[data-page=home] main>section:first-child{background-blend-mode:normal}.community-background{display:none}}
+@media(prefers-reduced-motion:reduce){.community-background{display:none}.programme-depth,.gallery-depth-image,.donation-progress span{transition:none!important;transform:none!important}}

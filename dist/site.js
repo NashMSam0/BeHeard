@@ -369,12 +369,14 @@ if (donationForm) {
     dialog.querySelector('.donation-transfer-note').textContent = monthly
       ? 'Arrange a monthly standing order with your bank, or repeat your EcoCash donation each month. Confirm the available EcoCash currency with the recipient before sending.'
       : 'Confirm the available EcoCash currency with the recipient before sending. Bank transfers use USD.';
+    dialog.classList.add('payment-step-active');
     donationForm.hidden = true;
     dialog.querySelector('.donation-payment-step').hidden = false;
     document.getElementById('donation-dialog-title').textContent = 'Choose a payment method';
   });
   dialog.querySelector('.donation-close').addEventListener('click', () => dialog.close());
   function showAmountStep() {
+    dialog.classList.remove('payment-step-active');
     donationForm.hidden = false;
     dialog.querySelector('.donation-payment-step').hidden = true;
     document.getElementById('donation-dialog-title').textContent = 'Make a donation';
@@ -408,3 +410,21 @@ if (!motionPreference.matches) {
     import('/button-effects.js').catch(() => {});
   }
 }
+
+if (!motionPreference.matches && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  document.querySelectorAll('main a[href^="/programmes.html#"]').forEach(card => {
+    card.classList.add('programme-depth');
+    card.addEventListener('pointermove', event => {
+      if (motionPreference.matches) return;
+      const box = card.getBoundingClientRect();
+      const x = (event.clientX - box.left) / box.width - .5;
+      const y = (event.clientY - box.top) / box.height - .5;
+      card.style.transform = 'perspective(700px) rotateX(' + (-y * 5) + 'deg) rotateY(' + (x * 5) + 'deg) translateY(-2px)';
+    });
+    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+    motionPreference.addEventListener('change', () => { card.style.transform = ''; });
+  });
+}
+document.querySelectorAll('.gallery-grid img, .home-slideshow img').forEach(image => {
+  image.classList.add('gallery-depth-image');
+});

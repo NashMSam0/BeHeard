@@ -338,3 +338,5 @@ Mukuru/WorldRemit/other transfer enquiries open Ashley’s confirmed WhatsApp nu
 Footer social and email links include locally embedded icons with visible text labels. Icons inherit the theme colour and require no third-party requests.
 
 Motion uses native page view transitions, section entrances and button hover feedback. Three.js 0.180.0 is locally vendored with its MIT license for the desktop Donate hover graphic. It loads only with fine-pointer hover and no reduced-motion preference. Rendering pauses when inactive. Mobile navigation is labelled Categories.
+
+Homepage Three.js points/lines form a subtle community background with capped resolution and offscreen/tab pause. Programme links have pointer depth, gallery images have gentle hover depth, and the donation popup has a two-step progress indicator. Mobile/reduced-motion fallbacks apply. An impact globe remains pending verified location data.
