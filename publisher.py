@@ -232,6 +232,8 @@ def create_app(private=None, public=None):
     with closing(connect(app)) as db, db:
         from founder_profile import install_founder_and_family
         install_founder_and_family(public, db)
+        from scholarship_birthdays import install_birthdays
+        install_birthdays(public, db)
 
     initial_artifact = publication.prepare()
     if cloud:
