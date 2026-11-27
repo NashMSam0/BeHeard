@@ -3,6 +3,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
 from publisher import create_app, connect
 
 class SubmissionTests(unittest.TestCase):
@@ -33,6 +34,16 @@ class SubmissionTests(unittest.TestCase):
         db.close()
         self.assertEqual(self.client.get("/founder/submissions").status_code, 302)
         self.assertEqual(response.headers["Cache-Control"], "no-store")
+
+    def test_render_https_origin_behind_proxy(self):
+        response = self.client.get("/forms/enquiry")
+        token = re.search(rb'name="token" value="([^"]+)"', response.data)[1].decode()
+        data = dict(token=token, name="Browser test", email="test@example.org", consent="yes")
+        with patch.dict("os.environ", {"RENDER_EXTERNAL_HOSTNAME": "localhost"}):
+            response = self.client.post("/forms/enquiry", data=data, headers={"Origin": "https://localhost"})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(self.client.post("/forms/enquiry", data=data,
+                headers={"Origin": "https://untrusted.example"}).status_code, 403)
 
     def test_invalid_token_rejected(self):
         self.assertEqual(self.client.post("/forms/enquiry", data={"token": "bad"}).status_code, 403)

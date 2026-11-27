@@ -51,7 +51,10 @@ def configure_submissions(app, connect, cloud):
             abort(503)
         error = None
         if request.method == "POST":
-            if request.headers.get("Origin") and request.headers["Origin"] != request.host_url.rstrip("/"):
+            # Render terminates HTTPS before forwarding to Flask over HTTP.
+            expected_origin = ("https://" + request.host if os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+                               else request.host_url.rstrip("/"))
+            if request.headers.get("Origin") and request.headers["Origin"] != expected_origin:
                 abort(403)
             try:
                 assert signer.loads(request.form.get("token", ""), max_age=7200) == kind
