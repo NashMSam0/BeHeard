@@ -352,3 +352,5 @@ The official BeHeard logo supplies favicon.ico and the Apple touch icon, added t
 Forms are available at the Flask host /forms/enquiry, /forms/volunteer and /forms/counselling. The protected inbox is /founder/submissions. Consent is recorded with notice version 2026-11-27. Durable save precedes confirmation. Reference-only notifications use Resend HTTPS, configured with BEHEARD_MAIL_API_KEY and BEHEARD_MAIL_FROM for a verified sender, with delivery to info@beheardzim.org. Neither the NGO mailbox nor sending account exists yet, so email activation/testing and newsletter setup are blocked. The requested future test recipient is nyashamsamson@gmail.com. Configure secrets only in Render. Pending notification retries are available in the inbox.
 
 Form origin validation accounts for Render HTTPS termination while preserving rejection of foreign browser origins. Regression tests cover HTTPS-origin submissions behind the proxy.
+
+The signed-in founder navigation includes Form submissions, opening the private inbox for all three form types.
