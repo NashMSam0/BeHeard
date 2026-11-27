@@ -334,3 +334,5 @@ Donation flow in preparation includes once-off/monthly choices, suggested USD am
 Donate Now links across all public pages open the amount/frequency popup, then show bank and EcoCash transfer instructions. Escape/close dismiss it and Back returns to the amount. These are donor-completed transfers. Card processing and automatic PayPal collection remain pending provider setup.
 
 Mukuru/WorldRemit/other transfer enquiries open Ashley’s confirmed WhatsApp number. The expanded website privacy notice describes the current donation flow, contact services, hosting, editor snapshots, theme local storage and founder session cookie. No optional tracking has been enabled. Organisation retention schedules and a legal review of the notice remain to be confirmed before adding personal-data forms or analytics.
+
+Footer social and email links include locally embedded icons with visible text labels. Icons inherit the theme colour and require no third-party requests.
