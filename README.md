@@ -320,3 +320,7 @@ The homepage hero rotates the school visit, family donation and community photos
 The homepage uses the community group photo and displays the same published News and Events section as Stories. Light mode is the default, with Dark mode and System settings available in the colour selector. The Gallery groups the supplied photos by story and event.
 
 The home-only floating News and Events link jumps to the news section. An open navigation dropdown dims the page behind the header.
+
+## Donation setup in preparation
+
+The donation methods template supports bank transfer, EcoCash and official PayPal links. Public receiving details belong in donation_settings.json. Empty or incomplete methods show a pending message and have no payment action. Never put passwords, PINs or API keys in this file. Bank monthly support uses donor-arranged standing orders. EcoCash monthly support uses repeat donor payments. Enable the PayPal monthly link only after the organisation account supports recurring donations and its hosted checkout is verified. Configuration changes require an admin deployment and a verified static publication. This setup is staged pending receiving details.

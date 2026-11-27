@@ -1,0 +1,8 @@
+{
+  "bank": {},
+  "ecocash": {},
+  "paypal": {
+    "once_off_url": "",
+    "monthly_url": ""
+  }
+}
