@@ -2,7 +2,7 @@ services:
   # Retain the existing service and all manually managed Supabase/auth variables.
   # Never change its runtime to static or create a second writer to its state row.
   - type: web
-    name: beheard-zimbabwe
+    name: beheardzim
     runtime: python
     plan: free
     autoDeployTrigger: 'off'
@@ -21,12 +21,12 @@ services:
       - key: BEHEARD_STATE_TOKEN
         sync: false
       - key: BEHEARD_PUBLIC_URL
-        value: https://beheard-zimbabwe.onrender.com
+        value: https://beheard-public.onrender.com
       - key: BEHEARD_EXPORT_TOKEN
         sync: false
       - key: BEHEARD_STATIC_DEPLOY_HOOK
         sync: false
-  # Candidate public site. No custom domains or public traffic switch.
+  # Production public site. The Flask service keeps the only durable writer.
   - type: web
     name: beheard-public
     runtime: static
@@ -43,9 +43,9 @@ services:
       - key: BEHEARD_EXPORT_TOKEN
         sync: false
       - key: BEHEARD_PUBLIC_URL
-        value: https://beheard-zimbabwe.onrender.com
+        value: https://beheard-public.onrender.com
       - key: BEHEARD_STATIC_STAGING
-        value: "1"
+        value: "0"
     routes:
       - type: redirect
         source: /index.html
@@ -60,6 +60,3 @@ services:
       - path: /*
         name: Cache-Control
         value: public, max-age=0, must-revalidate
-      - path: /*
-        name: X-Robots-Tag
-        value: noindex, nofollow
