@@ -394,3 +394,5 @@ h2 { line-height:1.14; }
 .donation-dialog::backdrop{background:rgba(10,25,44,.65)}.donation-close{float:right;font-size:30px;border:0;background:transparent;color:inherit;cursor:pointer}
 .donation-dialog-methods details{border:1px solid var(--rule);border-radius:8px;padding:16px;margin:12px 0}.donation-dialog-methods summary{font-weight:700;cursor:pointer}.donation-dialog-methods dd{margin-left:0;overflow-wrap:anywhere}.donation-dialog-methods dt{font-weight:700;margin-top:12px}
 @media(max-width:480px){.donation-chooser,.donation-dialog{padding:20px}.donation-amounts{grid-template-columns:repeat(2,1fr)}}
+
+body > #payment-methods{padding:0;background:transparent}body > #payment-methods > .wrap > p,body > #payment-methods > .wrap > .donation-methods{display:none}.donation-dialog .donation-chooser{border:0;padding:0;margin:20px 0;max-width:none}.donation-dialog [hidden]{display:none!important}

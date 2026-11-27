@@ -2,10 +2,13 @@
 
   <div class="wrap">
 
-    <h2>Make a donation</h2>
+
 
     <p>Choose a payment method for a once-off or monthly donation.</p>
 
+    <dialog id="donation-dialog" class="donation-dialog" aria-labelledby="donation-dialog-title">
+      <button type="button" class="donation-close" aria-label="Close donation window">×</button>
+      <h2 id="donation-dialog-title">Make a donation</h2>
     <form class="donation-chooser" id="donation-chooser">
       <fieldset><legend>Donation frequency</legend>
         <label><input type="radio" name="frequency" value="once-off" checked> Once-off</label>
@@ -23,15 +26,14 @@
       </fieldset>
       <button class="donation-continue" type="submit">Choose payment method</button>
     </form>
-    <dialog id="donation-dialog" class="donation-dialog" aria-labelledby="donation-dialog-title">
-      <button type="button" class="donation-close" aria-label="Close donation window">×</button>
-      <h2 id="donation-dialog-title">Choose a payment method</h2>
+      <div class="donation-payment-step" hidden>
       <p id="donation-summary" aria-live="polite"></p>
       <p>Complete your transfer using the receiving details below.</p>
       <div class="donation-dialog-methods"></div>
       <p class="donation-transfer-note"></p>
       <p><a href="/privacy.html">Privacy policy</a></p>
       <button type="button" class="donation-back">Back to amount</button>
+      </div>
     </dialog>
     <div class="donation-methods">
 

@@ -357,6 +357,7 @@ if (donationForm) {
     methods.replaceChildren();
     document.querySelectorAll('#payment-methods > .wrap > .donation-methods .donation-method')
       .forEach(method => {
+        if (method.querySelector('h3').textContent === 'PayPal' && !method.querySelector('a')) return;
         const details = document.createElement('details');
         const summary = document.createElement('summary');
         summary.textContent = method.querySelector('h3').textContent;
@@ -368,8 +369,24 @@ if (donationForm) {
     dialog.querySelector('.donation-transfer-note').textContent = monthly
       ? 'Arrange a monthly standing order with your bank, or repeat your EcoCash donation each month. Confirm the available EcoCash currency with the recipient before sending.'
       : 'Confirm the available EcoCash currency with the recipient before sending. Bank transfers use USD.';
+    donationForm.hidden = true;
+    dialog.querySelector('.donation-payment-step').hidden = false;
+    document.getElementById('donation-dialog-title').textContent = 'Choose a payment method';
+  });
+  dialog.querySelector('.donation-close').addEventListener('click', () => dialog.close());
+  function showAmountStep() {
+    donationForm.hidden = false;
+    dialog.querySelector('.donation-payment-step').hidden = true;
+    document.getElementById('donation-dialog-title').textContent = 'Make a donation';
+  }
+  dialog.querySelector('.donation-back').addEventListener('click', showAmountStep);
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a');
+    if (!link || !link.href) return;
+    const target = new URL(link.href);
+    if (target.origin !== location.origin || target.pathname !== '/involved.html' || target.hash !== '#donate') return;
+    event.preventDefault();
+    showAmountStep();
     dialog.showModal();
   });
-  dialog.querySelectorAll('.donation-close, .donation-back').forEach(button =>
-    button.addEventListener('click', () => dialog.close()));
 }

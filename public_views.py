@@ -8,9 +8,8 @@ from flask import render_template
 def render_public(public, name):
     public = Path(public)
     document = (public / name).read_text(encoding="utf-8")
-    if name == "involved.html":
-        from donations import render_donations
-        return document.replace('</main>', render_donations() + "\n</main>", 1)
+    from donations import render_donations
+    document = document.replace("</body>", render_donations() + "\n</body>", 1)
     if name == "gallery.html":
         return document.replace('</main>', render_template('gallery_groups.html') + '\n</main>', 1)
     if name != "index.html":
