@@ -428,3 +428,75 @@ if (!motionPreference.matches && matchMedia('(hover: hover) and (pointer: fine)'
 document.querySelectorAll('.gallery-grid img, .home-slideshow img').forEach(image => {
   image.classList.add('gallery-depth-image');
 });
+
+if (document.body.dataset.page === 'gallery') {
+  const main = document.getElementById('main');
+  const sections = Array.from(main.querySelectorAll('section')).filter(section => section.querySelector('.gallery-grid'));
+  const filters = document.createElement('div');
+  filters.className = 'gallery-filters wrap';
+  filters.setAttribute('role', 'group');
+  filters.setAttribute('aria-label', 'Photo categories');
+  const filterButtons = [];
+  function filterGallery(selected) {
+    sections.forEach(section => { section.hidden = selected !== null && section !== selected; });
+    filterButtons.forEach(({button, section}) => button.setAttribute('aria-pressed', String(section === selected)));
+  }
+  function addFilter(label, section) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = label;
+    button.addEventListener('click', () => filterGallery(section));
+    filters.append(button);
+    filterButtons.push({button, section});
+  }
+  addFilter('All photos', null);
+  sections.forEach(section => {
+    section.classList.add('gallery-album');
+    addFilter(section.querySelector('h2').textContent, section);
+  });
+  sections[0]?.before(filters);
+  filterGallery(null);
+  const viewer = document.createElement('dialog');
+  viewer.className = 'gallery-viewer';
+  viewer.setAttribute('aria-label', 'Photograph viewer');
+  viewer.innerHTML = '<button class="gallery-viewer-close" type="button" aria-label="Close photograph">×</button><figure><img alt=""><figcaption></figcaption></figure><div class="gallery-viewer-controls"><button type="button" aria-label="Previous photograph">←</button><button type="button" aria-label="Next photograph">→</button></div>';
+  document.body.append(viewer);
+  let photos = [];
+  let active = 0;
+  function showPhoto(index) {
+    active = (index + photos.length) % photos.length;
+    const source = photos[active];
+    const image = viewer.querySelector('img');
+    image.src = source.src;
+    image.alt = source.alt;
+    viewer.querySelector('figcaption').textContent = source.alt;
+  }
+  sections.forEach(section => {
+    section.querySelectorAll('.gallery-grid img').forEach(image => {
+      let link = image.closest('a');
+      if (!link) {
+        link = document.createElement('a');
+        link.href = image.src;
+        image.replaceWith(link);
+        link.append(image);
+      }
+      link.classList.add('gallery-tile');
+      link.addEventListener('click', event => {
+        event.preventDefault();
+        photos = Array.from(section.querySelectorAll('.gallery-grid img'));
+        showPhoto(photos.indexOf(image));
+        viewer.showModal();
+      });
+    });
+  });
+  viewer.querySelector('.gallery-viewer-close').addEventListener('click', () => viewer.close());
+  const controls = viewer.querySelectorAll('.gallery-viewer-controls button');
+  controls[0].addEventListener('click', () => showPhoto(active - 1));
+  controls[1].addEventListener('click', () => showPhoto(active + 1));
+  viewer.addEventListener('keydown', event => {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      showPhoto(active + (event.key === 'ArrowLeft' ? -1 : 1));
+    }
+  });
+}

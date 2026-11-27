@@ -422,3 +422,24 @@ body[data-page=home] main>section:first-child>.wrap{position:relative;z-index:1}
 .payment-step-active .donation-progress span{width:100%}
 @media(max-width:760px){body[data-page=home] main>section:first-child{background-blend-mode:normal}.community-background{display:none}}
 @media(prefers-reduced-motion:reduce){.community-background{display:none}.programme-depth,.gallery-depth-image,.donation-progress span{transition:none!important;transform:none!important}}
+
+body[data-page=gallery] .lead{padding-bottom:32px}
+.gallery-filters{display:flex;flex-wrap:wrap;gap:8px;padding-block:12px 28px}
+.gallery-filters button{font:inherit;font-size:.88rem;border:1px solid var(--rule);border-radius:24px;padding:10px 16px;background:var(--paper);color:var(--ink);cursor:pointer}
+.gallery-filters button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+body[data-page=gallery] .gallery-album{padding-block:32px}
+body[data-page=gallery] .gallery-album[hidden]{display:none}
+.gallery-album h2{font-size:clamp(1.3rem,2.3vw,1.8rem);margin-bottom:20px}
+.gallery-album .gallery-grid{max-width:none;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:0 0 18px}
+.gallery-tile{display:block;overflow:hidden;border-radius:10px;background:var(--sage);aspect-ratio:4/3}
+.gallery-album .gallery-grid img{width:100%;height:100%;aspect-ratio:4/3;object-fit:cover;border-radius:0}
+.gallery-viewer{width:min(1000px,calc(100% - 24px));max-height:92vh;padding:24px;border:0;border-radius:14px;background:var(--paper);color:var(--ink)}
+.gallery-viewer::backdrop{background:rgb(5 15 25 / 85%)}
+.gallery-viewer figure{margin:20px 0 0}.gallery-viewer img{display:block;width:100%;height:65vh;object-fit:contain}
+.gallery-viewer figcaption{text-align:center;padding:14px}
+.gallery-viewer-close{float:right;font-size:30px;background:transparent;border:0;color:inherit;cursor:pointer}
+.gallery-viewer-controls{display:flex;justify-content:center;gap:16px}
+.gallery-viewer-controls button{border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:50%;width:44px;height:44px;font-size:22px;cursor:pointer}
+@media(max-width:900px){.gallery-album .gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.gallery-album .gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.gallery-filters{gap:6px}.gallery-filters button{padding:8px 12px}.gallery-viewer{padding:16px}.gallery-viewer img{height:55vh}}
+body[data-page=home] main>section:first-child{overflow:clip}

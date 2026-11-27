@@ -340,3 +340,5 @@ Footer social and email links include locally embedded icons with visible text l
 Motion uses native page view transitions, section entrances and button hover feedback. Three.js 0.180.0 is locally vendored with its MIT license for the desktop Donate hover graphic. It loads only with fine-pointer hover and no reduced-motion preference. Rendering pauses when inactive. Mobile navigation is labelled Categories.
 
 Homepage Three.js points/lines form a subtle community background with capped resolution and offscreen/tab pause. Programme links have pointer depth, gallery images have gentle hover depth, and the donation popup has a two-step progress indicator. Mobile/reduced-motion fallbacks apply. An impact globe remains pending verified location data.
+
+Gallery redesign uses category filters and consistent 4:3 thumbnails in fixed responsive columns. Selecting a thumbnail opens an uncropped full-image viewer with previous/next, keyboard arrows and Escape/close controls. All photographs remain available.
