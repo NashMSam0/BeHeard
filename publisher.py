@@ -290,6 +290,10 @@ def create_app(private=None, public=None):
             from public_artifact import PUBLIC_FILES
             if request.view_args.get("filename") not in PUBLIC_FILES | {"editor.js"}:
                 abort(404)
+            from public_manifest import PUBLIC_PAGES
+            if request.view_args.get("filename") in PUBLIC_PAGES:
+                from public_views import render_public
+                return app.response_class(render_public(public, request.view_args["filename"]), mimetype="text/html")
 
         if not request.path.startswith("/founder"):
 
