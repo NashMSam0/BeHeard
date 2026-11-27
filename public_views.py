@@ -9,6 +9,8 @@ def render_public(public, name):
     public = Path(public)
     document = (public / name).read_text(encoding="utf-8")
     document = document.replace("</head>", '<link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head>', 1)
+    if name in ("contact.html", "involved.html", "programmes.html"):
+        document = document.replace("</main>", render_template("form_links.html", page=name) + "</main>", 1)
     from donations import render_donations
     document = document.replace("</body>", render_donations() + "\n</body>", 1)
     if name == "privacy.html":

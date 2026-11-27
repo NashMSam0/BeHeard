@@ -16,3 +16,8 @@
   </div>
 </div></section>
 {% endfor %}
+
+<section class="block"><div class="wrap"><h2>Videos</h2><div class="gallery-video-grid">
+{% for src, caption in [('/sewing-finished-work.mp4','Showing her finished sewing work'),('/sewing-at-machine.mp4','Sewing at her machine'),('/crushing-cans.mp4','Crushing cans before receiving the sewing machine'),('/former-home-exterior.mp4','The family’s former home'),('/former-home-room.mp4','The former sleeping area'),('/former-home-bathroom.mp4','The former bathroom')] %}
+<figure><video controls playsinline preload="none" aria-label="{{ caption }}" src="{{ src }}"></video><figcaption>{{ caption }}</figcaption></figure>
+{% endfor %}</div></div></section>

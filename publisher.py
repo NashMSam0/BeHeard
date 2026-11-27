@@ -241,6 +241,9 @@ def create_app(private=None, public=None):
         from programme_story_links import install_programme_story_links
         install_programme_story_links(public, db)
 
+    from submissions import configure_submissions
+    configure_submissions(app, connect, cloud)
+
     initial_artifact = publication.prepare()
     if cloud:
         cloud.save()

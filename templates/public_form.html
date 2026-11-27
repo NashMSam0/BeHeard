@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ title }} | BeHeard Zimbabwe</title><link rel="stylesheet" href="/styles.css"></head><body><main class="wrap intake"><a href="https://beheard-public.onrender.com/">BeHeard Zimbabwe</a><h1>{{ title }}</h1>
+{% if reference %}<p>Your submission has been saved. Your reference is {{ reference }}.</p>{% else %}
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}
+{% if kind == 'counselling' %}<p>Request an appointment here. Please share contact details and preferred appointment times only. A request does not confirm an appointment. For urgent help, contact local emergency services.</p>{% endif %}
+<form method="post"><input type="hidden" name="token" value="{{ token }}">
+<label>Name <input name="name" autocomplete="name" maxlength="150" required></label>
+<label>Email <input type="email" name="email" autocomplete="email" maxlength="254" required></label>
+<label>Phone (optional) <input type="tel" name="phone" autocomplete="tel" maxlength="60"></label>
+<label>{{ 'Preferred appointment times and contact method' if kind == 'counselling' else 'How would you like to help?' if kind == 'volunteer' else 'Your enquiry' }}<textarea name="message" rows="5" maxlength="3000"></textarea></label>
+<div class="intake-trap" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<label class="intake-consent"><input type="checkbox" name="consent" value="yes" required> {% if kind == 'counselling' %}I explicitly consent to BeHeard Zimbabwe storing and using the personal and sensitive information I choose to provide to arrange my counselling appointment and contact me.{% else %}I agree to BeHeard Zimbabwe storing and using my details to respond to this request.{% endif %}</label>
+<p>Read our <a href="https://beheard-public.onrender.com/privacy.html">privacy policy</a>. You can contact info@beheardzim.org to request correction, deletion or withdrawal of consent.</p><button type="submit" class="donation-continue">Submit request</button></form>{% endif %}
+<p>Prefer WhatsApp? <a href="https://wa.me/263720116342">Contact BeHeard on WhatsApp</a></p><p>Opening WhatsApp does not submit this form.</p></main></body></html>
