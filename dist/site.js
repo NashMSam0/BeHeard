@@ -230,12 +230,11 @@ makeStorySlideshow(document.querySelectorAll('#sewing-story .impact-media > .imp
   'Women and Community Empowerment photos and videos');
 makeStorySlideshow(document.querySelectorAll('#assisting-vulnerable-families .prose > .impact-grid'),
   'Assisting Vulnerable Families');
-const education = document.querySelector('.education-categories');
-if (education) {
+document.querySelectorAll('.education-categories').forEach((education, groupIndex) => {
   const tablist = document.createElement('div');
   tablist.className = 'education-tablist';
   tablist.setAttribute('role', 'tablist');
-  tablist.setAttribute('aria-label', 'Educational Support');
+  tablist.setAttribute('aria-label', education.classList.contains('family-categories') ? 'Assisting Vulnerable Families' : 'Educational Support');
   const panels = [];
   const tabs = Array.from(education.querySelectorAll('details'), (details, index) => {
     const summary = details.querySelector('summary');
@@ -243,11 +242,11 @@ if (education) {
     const tab = document.createElement('button');
     tab.type = 'button';
     tab.textContent = label;
-    tab.id = `education-tab-${index}`;
+    tab.id = `education-tab-${groupIndex}-${index}`;
     tab.setAttribute('role', 'tab');
     const panel = document.createElement('div');
     panel.className = 'education-panel';
-    panel.id = `education-panel-${index}`;
+    panel.id = `education-panel-${groupIndex}-${index}`;
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('aria-labelledby', tab.id);
     tab.setAttribute('aria-controls', panel.id);
@@ -286,7 +285,7 @@ if (education) {
   education.replaceChildren(tablist, ...panels);
   education.classList.add('education-tabs');
   select(0);
-}
+});
 document.querySelectorAll('.home-slideshow').forEach(slideshow => {
   const track = slideshow.querySelector('.slide-track');
   const toggle = slideshow.querySelector('.slideshow-toggle');
