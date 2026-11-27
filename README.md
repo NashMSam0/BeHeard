@@ -336,3 +336,5 @@ Donate Now links across all public pages open the amount/frequency popup, then s
 Mukuru/WorldRemit/other transfer enquiries open Ashley’s confirmed WhatsApp number. The expanded website privacy notice describes the current donation flow, contact services, hosting, editor snapshots, theme local storage and founder session cookie. No optional tracking has been enabled. Organisation retention schedules and a legal review of the notice remain to be confirmed before adding personal-data forms or analytics.
 
 Footer social and email links include locally embedded icons with visible text labels. Icons inherit the theme colour and require no third-party requests.
+
+Motion uses native page view transitions, section entrances and button hover feedback. Three.js 0.180.0 is locally vendored with its MIT license for the desktop Donate hover graphic. It loads only with fine-pointer hover and no reduced-motion preference. Rendering pauses when inactive. Mobile navigation is labelled Categories.

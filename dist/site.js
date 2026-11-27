@@ -48,7 +48,7 @@ const header = document.getElementById('site-header');
 if (header) {
   header.innerHTML = `<header class="site-header"><div class="nav-wrap">
     <a class="brand" href="/" aria-label="BeHeard Zimbabwe"><img class="brand-logo" src="/beheard-logo.jpg" alt="BeHeard Zimbabwe" width="1080" height="1080" fetchpriority="high"></a>
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">Website Pages</button>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">Categories</button>
     <nav class="nav-links" id="primary-navigation" aria-label="Website Pages">
       ${navItems.map(navItem).join('')}<a class="nav-donate" href="/involved.html#donate">Donate Now</a>
     </nav></div></header>`;
@@ -389,4 +389,22 @@ if (donationForm) {
     showAmountStep();
     dialog.showModal();
   });
+}
+
+const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+if (!motionPreference.matches) {
+  document.querySelectorAll('main > section').forEach(section => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.animate([{opacity: .65, transform: 'translateY(12px)'}, {opacity: 1, transform: 'translateY(0)'}],
+          {duration: 450, easing: 'ease-out'});
+        observer.unobserve(entry.target);
+      });
+    }, {threshold: .08});
+    observer.observe(section);
+  });
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    import('/button-effects.js').catch(() => {});
+  }
 }

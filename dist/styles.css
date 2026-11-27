@@ -398,3 +398,14 @@ h2 { line-height:1.14; }
 body > #payment-methods{padding:0;background:transparent}body > #payment-methods > .wrap > p,body > #payment-methods > .wrap > .donation-methods{display:none}.donation-dialog .donation-chooser{border:0;padding:0;margin:20px 0;max-width:none}.donation-dialog [hidden]{display:none!important}
 
 .contact-social-links a{display:inline-flex;align-items:center;gap:8px}.social-icon{width:22px;height:22px;flex:0 0 22px}.contact-social-links a:hover .social-icon{opacity:.8}
+
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:page-out 140ms ease both}
+::view-transition-new(root){animation:page-in 220ms ease both}
+@keyframes page-out{to{opacity:0}}
+@keyframes page-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.nav-donate{position:relative;isolation:isolate;overflow:hidden}
+.button-glow{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;z-index:-1}
+.nav-donate,.donation-continue,.donation-amounts button,.inline-link,.gallery-controls button{transition:transform 180ms ease,box-shadow 180ms ease}
+@media(hover:hover){.nav-donate:hover,.donation-continue:hover,.donation-amounts button:hover,.gallery-controls button:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgb(15 35 55 / 15%)}.inline-link:hover{transform:translateX(3px)}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}.nav-donate,.donation-continue,.donation-amounts button,.inline-link,.gallery-controls button{transition:none}}

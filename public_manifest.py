@@ -5,7 +5,7 @@ import json
 PUBLIC_PAGES = ("index.html", "about.html", "programmes.html", "stories.html", "involved.html",
                 "contact.html", "privacy.html", "board.html", "gallery.html")
 PUBLIC_ASSETS = (
-    "styles.css", "site.js", "ashley-mutamiri.jpg", "carlos-birthday-1.jpg", "carlos-birthday-2.jpg", "carlos-birthday-3.jpg", "carlos-birthday-4.jpg", "carlos-birthday-5.jpg", "carlos-birthday-6.jpg", "carlos-birthday-7.jpg", "beheard-logo.jpg", "home-community.jpg",
+    "styles.css", "site.js", "button-effects.js", "three.module.min.js", "three.core.min.js", "three-LICENSE.txt", "ashley-mutamiri.jpg", "carlos-birthday-1.jpg", "carlos-birthday-2.jpg", "carlos-birthday-3.jpg", "carlos-birthday-4.jpg", "carlos-birthday-5.jpg", "carlos-birthday-6.jpg", "carlos-birthday-7.jpg", "beheard-logo.jpg", "home-community.jpg",
     "uniform-1.jpg", "uniform-2.jpg", "uniform-3.jpg", "stationary-1.jpg", "stationary-2.jpg",
     "sewing-story-1.jpg", "sewing-story-2.jpg", "sewing-story-3.jpg",
     "family-home-1.jpg", "family-home-2.jpg", "family-home-3.jpg",
