@@ -110,7 +110,7 @@ if (footer) {
     <a class="brand" href="/" aria-label="BeHeard Zimbabwe"><img class="brand-logo" src="/beheard-logo.jpg" alt="BeHeard Zimbabwe" width="1080" height="1080" loading="lazy"></a>
     <address>2539 Chinotimba, Victoria Falls, Zimbabwe
       <a href="tel:+263720116342">+263 72 011 6342</a>
-      <a href="mailto:info@beheardzim.org">info@beheardzim.org</a>
+      <div class="contact-social-links"><a href="mailto:info@beheardzim.org">info@beheardzim.org</a><a href="https://www.instagram.com/beheard_zimbabwe/">Instagram</a><a href="https://www.tiktok.com/@beheard.zimbabwe">TikTok</a><a href="https://www.facebook.com/share/16V8PWUCgvc/">Facebook</a></div>
     </address>
     <nav aria-label="Website Pages">
       <a href="/about.html#founder">Meet Our Founder</a>

@@ -1,5 +1,12 @@
 {
-  "bank": {},
+  "bank": {
+    "bank_name": "Central Africa Building Society",
+    "account_name": "Ashley Sibanda",
+    "account_number": "1149405546",
+    "currency": "USD",
+    "swift": "CABSZWHA",
+    "bank_address": "3 Northend Close, Northridge Park, Highlands, Harare, Zimbabwe"
+  },
   "ecocash": {},
   "paypal": {
     "once_off_url": "",

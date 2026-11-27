@@ -324,3 +324,5 @@ The home-only floating News and Events link jumps to the news section. An open n
 ## Donation setup in preparation
 
 The donation methods template supports bank transfer, EcoCash and official PayPal links. Public receiving details belong in donation_settings.json. Empty or incomplete methods show a pending message and have no payment action. Never put passwords, PINs or API keys in this file. Bank monthly support uses donor-arranged standing orders. EcoCash monthly support uses repeat donor payments. Enable the PayPal monthly link only after the organisation account supports recurring donations and its hosted checkout is verified. Configuration changes require an admin deployment and a verified static publication. This setup is staged pending receiving details.
+
+Social links for Instagram, TikTok and Facebook are in the footer alongside email. Seven birthday photographs appear in the scholarship story and gallery. USD bank transfer receiving details supplied by the organisation are configured. The beneficiary is Ashley Sibanda. EcoCash and PayPal details remain pending.

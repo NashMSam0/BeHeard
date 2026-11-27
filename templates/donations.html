@@ -7,7 +7,7 @@
         <h3>Bank transfer</h3>
         {% if bank.get('account_name') and bank.get('account_number') and bank.get('bank_name') and bank.get('currency') %}
         <dl>
-          {% for key, label in [('bank_name', 'Bank'), ('account_name', 'Account name'), ('account_number', 'Account number'), ('branch', 'Branch'), ('currency', 'Currency'), ('swift', 'SWIFT code'), ('reference', 'Reference')] %}
+          {% for key, label in [('bank_name', 'Bank'), ('account_name', 'Account name'), ('account_number', 'Account number'), ('branch', 'Branch'), ('bank_address', 'Bank address'), ('currency', 'Currency'), ('swift', 'SWIFT code'), ('reference', 'Reference')] %}
           {% if bank.get(key) %}<dt>{{ label }}</dt><dd>{{ bank[key] }}</dd>{% endif %}
           {% endfor %}
         </dl>
