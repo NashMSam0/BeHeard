@@ -346,3 +346,5 @@ Gallery redesign uses category filters and consistent 4:3 thumbnails in fixed re
 Birthday Celebrations now includes ten supplied photographs across three celebrations, shared between the scholarship story and gallery.
 
 The footer credits Nash Tech and links to WhatsApp at +263 77 344 7241. Its locally generated QR code encodes https://wa.me/263773447241 and is available at /nash-tech-whatsapp-qr.png.
+
+The official BeHeard logo supplies favicon.ico and the Apple touch icon, added to all public pages during shared rendering.

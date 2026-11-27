@@ -8,6 +8,7 @@ from flask import render_template
 def render_public(public, name):
     public = Path(public)
     document = (public / name).read_text(encoding="utf-8")
+    document = document.replace("</head>", '<link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head>', 1)
     from donations import render_donations
     document = document.replace("</body>", render_donations() + "\n</body>", 1)
     if name == "privacy.html":
