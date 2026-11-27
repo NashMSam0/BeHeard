@@ -443,3 +443,5 @@ body[data-page=gallery] .gallery-album[hidden]{display:none}
 @media(max-width:900px){.gallery-album .gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){.gallery-album .gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.gallery-filters{gap:6px}.gallery-filters button{padding:8px 12px}.gallery-viewer{padding:16px}.gallery-viewer img{height:55vh}}
 body[data-page=home] main>section:first-child{overflow:clip}
+
+.creator-credit{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;border-top:1px solid rgb(255 255 255 / 20%);padding-block:20px;font-size:.85rem}.creator-credit details{text-align:right}.creator-credit summary{cursor:pointer}.creator-credit img{display:block;width:160px;height:160px;margin:12px 0 0 auto;background:white;border-radius:4px}@media(max-width:600px){.creator-credit{flex-direction:column}.creator-credit details{text-align:left}.creator-credit img{margin-left:0}}

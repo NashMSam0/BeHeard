@@ -344,3 +344,5 @@ Homepage Three.js points/lines form a subtle community background with capped re
 Gallery redesign uses category filters and consistent 4:3 thumbnails in fixed responsive columns. Selecting a thumbnail opens an uncropped full-image viewer with previous/next, keyboard arrows and Escape/close controls. All photographs remain available.
 
 Birthday Celebrations now includes ten supplied photographs across three celebrations, shared between the scholarship story and gallery.
+
+The footer credits Nash Tech and links to WhatsApp at +263 77 344 7241. Its locally generated QR code encodes https://wa.me/263773447241 and is available at /nash-tech-whatsapp-qr.png.
