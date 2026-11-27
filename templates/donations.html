@@ -11,13 +11,14 @@
           {% if bank.get(key) %}<dt>{{ label }}</dt><dd>{{ bank[key] }}</dd>{% endif %}
           {% endfor %}
         </dl>
+        <p class="bank-name-note"><strong>Please note</strong> — the bank beneficiary name appears as Ashley Sibanda.</p>
         <p>For monthly donations, arrange a standing order with your bank using these details.</p>
         {% else %}<p>Receiving details will be added once confirmed.</p>{% endif %}
       </article>
       <article class="donation-method">
         <h3>EcoCash</h3>
-        {% if ecocash.get('recipient') and ecocash.get('number') and ecocash.get('currency') %}
-        <dl><dt>Registered name</dt><dd>{{ ecocash.recipient }}</dd><dt>{{ 'Merchant code' if ecocash.get('merchant') else 'Receiving number' }}</dt><dd>{{ ecocash.number }}</dd><dt>Currency</dt><dd>{{ ecocash.currency }}</dd></dl>
+        {% if ecocash.get('recipient') and ecocash.get('number')  %}
+        <dl><dt>Registered name</dt><dd>{{ ecocash.recipient }}</dd><dt>{{ 'Merchant code' if ecocash.get('merchant') else 'Receiving number' }}</dt><dd>{{ ecocash.number }}</dd>{% if ecocash.get("currency") %}<dt>Currency</dt><dd>{{ ecocash.currency }}</dd>{% endif %}</dl>
         <p>For monthly support, repeat your donation each month.</p>
         {% else %}<p>Receiving details will be added once confirmed.</p>{% endif %}
       </article>

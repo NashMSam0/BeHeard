@@ -7,7 +7,10 @@
     "swift": "CABSZWHA",
     "bank_address": "3 Northend Close, Northridge Park, Highlands, Harare, Zimbabwe"
   },
-  "ecocash": {},
+  "ecocash": {
+    "recipient": "Ashley Mutamiri",
+    "number": "+263 77 469 7508"
+  },
   "paypal": {
     "once_off_url": "",
     "monthly_url": ""
