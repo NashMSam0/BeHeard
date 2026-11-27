@@ -354,3 +354,5 @@ Forms are available at the Flask host /forms/enquiry, /forms/volunteer and /form
 Form origin validation accounts for Render HTTPS termination while preserving rejection of foreign browser origins. Regression tests cover HTTPS-origin submissions behind the proxy.
 
 The signed-in founder navigation includes Form submissions, opening the private inbox for all three form types.
+
+Signed-in admins can change their password at /founder/password with current-password verification and confirmation. Successful durable saves invalidate all admin sessions. Environment-reset generations are tracked separately so subsequent restarts preserve a password changed through the dashboard. Admin templates include the BeHeard favicon and organised navigation.

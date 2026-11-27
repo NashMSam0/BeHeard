@@ -114,6 +114,22 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         return response.location.rsplit("/", 1)[1]
 
+    def test_admin_password_change(self):
+        csrf = self.login()
+        changed = "new-password-" + "z" * 25
+        response = self.client.post("/founder/password", data={
+            "csrf": csrf, "current_password": PASSWORD,
+            "new_password": changed, "confirm_password": changed})
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("password_changed", response.location)
+        self.assertEqual(self.client.get("/founder/").status_code, 302)
+        self.client.get("/founder/login")
+        with self.client.session_transaction(path="/founder/") as session:
+            csrf = session["csrf"]
+        response = self.client.post("/founder/login", data={"csrf": csrf, "password": changed})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.client.get("/founder/password").status_code, 200)
+
     def test_export_matches_every_live_page_and_preserves_all_media(self):
         files, digest = validate_artifact(self.export(), ORIGIN)
         for name in PUBLIC_PAGES:

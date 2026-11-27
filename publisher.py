@@ -203,7 +203,9 @@ def create_app(private=None, public=None):
         db.execute("INSERT OR IGNORE INTO settings VALUES ('secret',?)", (secrets.token_hex(32),))
 
         bootstrap = os.environ.get("BEHEARD_FOUNDER_HASH")
-        stored_generation = db.execute("SELECT value FROM settings WHERE key='generation'").fetchone()
+        stored_generation = db.execute("SELECT value FROM settings WHERE key='auth_environment_generation'").fetchone()
+        if not stored_generation:
+            stored_generation = db.execute("SELECT value FROM settings WHERE key='generation'").fetchone()
         configured_generation = os.environ.get("BEHEARD_FOUNDER_GENERATION")
         if bootstrap and configured_generation and (not stored_generation or stored_generation[0] != configured_generation):
             db.executemany("INSERT OR REPLACE INTO settings VALUES (?,?)", [
@@ -211,6 +213,8 @@ def create_app(private=None, public=None):
                 ("generation", os.environ["BEHEARD_FOUNDER_GENERATION"]),
                 ("secret", os.environ["BEHEARD_SESSION_SECRET"])])
             db.execute("DELETE FROM failures")
+        if configured_generation:
+            db.execute("INSERT OR REPLACE INTO settings VALUES (?,?)", ("auth_environment_generation", configured_generation))
         app.secret_key = db.execute("SELECT value FROM settings WHERE key='secret'").fetchone()[0]
 
         db.execute("SELECT 1")
@@ -405,6 +409,33 @@ def create_app(private=None, public=None):
         return render_template("founder.html", view="login", ready="password" in settings)
 
 
+
+    @app.route("/founder/password", methods=["GET", "POST"])
+    def change_password():
+        error = None
+        if request.method == "POST":
+            current = request.form.get("current_password", "")
+            password = request.form.get("new_password", "")
+            confirmation = request.form.get("confirm_password", "")
+            with closing(connect(app)) as db:
+                stored = db.execute("SELECT value FROM settings WHERE key='password'").fetchone()
+            if not stored or not check_password_hash(stored[0], current):
+                error = "Your current password is incorrect."
+            elif len(password) < 14 or len(password) > 200:
+                error = "Use a new password between 14 and 200 characters."
+            elif password != confirmation:
+                error = "The new passwords do not match."
+            elif password == current:
+                error = "Choose a different new password."
+            else:
+                with closing(connect(app)) as db, db:
+                    db.executemany("INSERT OR REPLACE INTO settings VALUES (?,?)", [
+                        ("password", generate_password_hash(password, method="pbkdf2:sha256:600000")),
+                        ("generation", secrets.token_hex(24))])
+                    db.execute("DELETE FROM failures")
+                session.clear()
+                return redirect(url_for("login", password_changed="1"))
+        return render_template("password.html", error=error), 400 if error else 200
 
     @app.post("/founder/logout")
 
