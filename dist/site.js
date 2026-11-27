@@ -328,3 +328,48 @@ document.querySelectorAll('.home-slideshow').forEach(slideshow => {
     move(1);
   }, 5500);
 });
+
+const donationForm = document.getElementById('donation-chooser');
+if (donationForm) {
+  const amountInput = donationForm.elements.amount;
+  const dialog = document.getElementById('donation-dialog');
+  const amountButtons = donationForm.querySelectorAll('[data-amount]');
+  amountButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      amountInput.value = button.dataset.amount;
+      amountButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    });
+    button.setAttribute('aria-pressed', 'false');
+  });
+  amountInput.addEventListener('input', () => {
+    amountButtons.forEach(button => button.setAttribute('aria-pressed',
+      String(button.dataset.amount === amountInput.value)));
+  });
+  donationForm.addEventListener('submit', event => {
+    event.preventDefault();
+    if (!donationForm.reportValidity()) return;
+    const monthly = donationForm.elements.frequency.value === 'monthly';
+    const amount = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
+      .format(Number(amountInput.value));
+    document.getElementById('donation-summary').textContent =
+      'Your ' + (monthly ? 'monthly' : 'once-off') + ' donation of US ' + amount;
+    const methods = dialog.querySelector('.donation-dialog-methods');
+    methods.replaceChildren();
+    document.querySelectorAll('#payment-methods > .wrap > .donation-methods .donation-method')
+      .forEach(method => {
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = method.querySelector('h3').textContent;
+        details.append(summary);
+        Array.from(method.children).filter(child => child.tagName !== 'H3')
+          .forEach(child => details.append(child.cloneNode(true)));
+        methods.append(details);
+      });
+    dialog.querySelector('.donation-transfer-note').textContent = monthly
+      ? 'Arrange a monthly standing order with your bank, or repeat your EcoCash donation each month. Confirm the available EcoCash currency with the recipient before sending.'
+      : 'Confirm the available EcoCash currency with the recipient before sending. Bank transfers use USD.';
+    dialog.showModal();
+  });
+  dialog.querySelectorAll('.donation-close, .donation-back').forEach(button =>
+    button.addEventListener('click', () => dialog.close()));
+}

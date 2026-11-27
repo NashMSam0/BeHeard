@@ -328,3 +328,5 @@ The donation methods template supports bank transfer, EcoCash and official PayPa
 Social links for Instagram, TikTok and Facebook are in the footer alongside email. Seven birthday photographs appear in the scholarship story and gallery. USD bank transfer receiving details supplied by the organisation are configured. The beneficiary is Ashley Sibanda. EcoCash and PayPal details remain pending.
 
 EcoCash receiving number is configured under Ashley Mutamiri. Currency remains unspecified pending confirmation. A prominent bank note explains that the beneficiary name appears as Ashley Sibanda.
+
+Donation flow in preparation includes once-off/monthly choices, suggested USD amounts, custom amount validation and a modal with payment-method instructions. Bank/EcoCash transfers are completed by donors externally. Card checkout and automatic monthly PayPal collection require an eligible connected provider. Personal and card data are not collected by this flow.
