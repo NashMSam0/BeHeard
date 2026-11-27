@@ -23,6 +23,11 @@ def configure_submissions(app, connect, cloud):
             message TEXT NOT NULL, consent TEXT NOT NULL, consent_version TEXT NOT NULL,
             fingerprint TEXT NOT NULL, notified INTEGER NOT NULL DEFAULT 0)""")
 
+    with closing(connect(app)) as db, db:
+        columns = {row[1] for row in db.execute("PRAGMA table_info(submissions)")}
+        if "deleted" not in columns:
+            db.execute("ALTER TABLE submissions ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0")
+
     def notify(identifier):
         key = os.environ.get("BEHEARD_MAIL_API_KEY")
         sender = os.environ.get("BEHEARD_MAIL_FROM")
@@ -81,7 +86,7 @@ def configure_submissions(app, connect, cloud):
                     if cloud:
                         cloud.check_revision()
                     with closing(connect(app)) as db, db:
-                        db.execute("INSERT INTO submissions VALUES (?,?,?,?,?,?,?,?,?,?,0)",
+                        db.execute("INSERT INTO submissions (id,kind,created,name,email,phone,message,consent,consent_version,fingerprint,notified) VALUES (?,?,?,?,?,?,?,?,?,?,0)",
                             (identifier, kind, now, name, email, phone, message, now, "2026-11-27", fingerprint))
                     if cloud:
                         cloud.save()
@@ -109,13 +114,27 @@ def configure_submissions(app, connect, cloud):
     @app.get("/founder/submissions")
     def submissions_inbox():
         with closing(connect(app)) as db:
-            rows = db.execute("SELECT * FROM submissions ORDER BY created DESC LIMIT 500").fetchall()
-        return render_template("submissions.html", rows=rows, kinds=KINDS)
+            rows = db.execute("SELECT * FROM submissions WHERE deleted=? ORDER BY created DESC LIMIT 500", (1 if request.args.get("trash") == "1" else 0,)).fetchall()
+        return render_template("submissions.html", rows=rows, kinds=KINDS, trash=request.args.get("trash") == "1")
+
+    @app.post("/founder/submissions/<identifier>/delete")
+    def delete_submission(identifier):
+        with closing(connect(app)) as db, db:
+            db.execute("UPDATE submissions SET deleted=1 WHERE id=?", (identifier,))
+        from flask import redirect
+        return redirect("/founder/submissions")
+
+    @app.post("/founder/submissions/<identifier>/restore")
+    def restore_submission(identifier):
+        with closing(connect(app)) as db, db:
+            db.execute("UPDATE submissions SET deleted=0 WHERE id=?", (identifier,))
+        from flask import redirect
+        return redirect("/founder/submissions?trash=1")
 
     @app.post("/founder/submissions/retry")
     def retry_form_mail():
         with closing(connect(app)) as db:
-            pending = db.execute("SELECT id FROM submissions WHERE notified=0 LIMIT 20").fetchall()
+            pending = db.execute("SELECT id FROM submissions WHERE notified=0 AND deleted=0 LIMIT 20").fetchall()
         for row in pending:
             if notify(row["id"]):
                 with closing(connect(app)) as db, db:

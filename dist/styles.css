@@ -452,3 +452,5 @@ body[data-page=home] main>section:first-child{overflow:clip}
 .editor .admin-nav>a,.editor .admin-nav button,.editor a.button,.editor button{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:8px;border:1px solid var(--rule);font:inherit;line-height:1.4;min-height:44px}
 .editor .admin-nav form{margin:0 0 0 auto}.admin-publication{padding:20px;border:1px solid var(--rule);border-radius:12px;margin-bottom:28px}.admin-publication p{margin-top:0}.editor form label{display:block;margin:16px 0}.editor form label input:not([type=checkbox]),.editor form label textarea{display:block;width:100%;padding:12px;font:inherit;border:1px solid var(--rule);border-radius:6px}.admin-password{max-width:640px;padding-block:40px}.editor .news-item{padding:20px;border-bottom:1px solid var(--rule)}
 @media(max-width:600px){.editor .admin-nav{display:grid;grid-template-columns:1fr 1fr}.editor .admin-nav form{margin:0}.editor .admin-nav form button{width:100%}}
+
+.password-eye{margin-top:8px!important;padding:6px 12px!important;min-height:36px!important}.intake .donation-method{margin-block:20px}.intake .donation-method form{margin-top:16px}

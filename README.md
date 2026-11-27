@@ -356,3 +356,5 @@ Form origin validation accounts for Render HTTPS termination while preserving re
 The signed-in founder navigation includes Form submissions, opening the private inbox for all three form types.
 
 Signed-in admins can change their password at /founder/password with current-password verification and confirmation. Successful durable saves invalidate all admin sessions. Environment-reset generations are tracked separately so subsequent restarts preserve a password changed through the dashboard. Admin templates include the BeHeard favicon and organised navigation.
+
+Admins can move submissions to Deleted submissions and restore them. Records remain in private durable snapshots. Password fields include show/hide controls. Owner recovery at /founder/recover requires the private owner code whose hash is in BEHEARD_OWNER_RECOVERY_HASH. Store the code in the owner password manager and rotate it through Render if compromised. Recovery invalidates admin sessions and persists through the existing durable-save workflow.

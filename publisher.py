@@ -295,7 +295,7 @@ def create_app(private=None, public=None):
 
         if request.endpoint == "static":
             from public_artifact import PUBLIC_FILES
-            if request.view_args.get("filename") not in PUBLIC_FILES | {"editor.js"}:
+            if request.view_args.get("filename") not in PUBLIC_FILES | {"editor.js", "admin-controls.js"}:
                 abort(404)
             from public_manifest import PUBLIC_PAGES
             if request.view_args.get("filename") in PUBLIC_PAGES:
@@ -317,7 +317,7 @@ def create_app(private=None, public=None):
 
                 abort(403)
 
-        if request.endpoint == "login":
+        if request.endpoint in ("login", "recover_password"):
 
             return
 
@@ -409,6 +409,35 @@ def create_app(private=None, public=None):
         return render_template("founder.html", view="login", ready="password" in settings)
 
 
+
+    @app.route("/founder/recover", methods=["GET", "POST"])
+    def recover_password():
+        session.setdefault("csrf", secrets.token_hex(24))
+        error = None
+        if request.method == "POST":
+            now = int(time.time())
+            with closing(connect(app)) as db, db:
+                db.execute("DELETE FROM failures WHERE at < ?", (now - 300,))
+                if db.execute("SELECT COUNT(*) FROM failures").fetchone()[0] >= 8:
+                    abort(429, "Try again in five minutes.")
+                recovery_hash = os.environ.get("BEHEARD_OWNER_RECOVERY_HASH", "")
+                valid = recovery_hash and check_password_hash(recovery_hash, request.form.get("recovery_code", ""))
+                if not valid:
+                    db.execute("INSERT INTO failures VALUES (?)", (now,))
+            password = request.form.get("new_password", "")
+            if not valid:
+                error = "Recovery code is incorrect."
+            elif len(password) < 14 or len(password) > 200 or password != request.form.get("confirm_password"):
+                error = "Use matching passwords between 14 and 200 characters."
+            else:
+                with closing(connect(app)) as db, db:
+                    db.executemany("INSERT OR REPLACE INTO settings VALUES (?,?)", [
+                        ("password", generate_password_hash(password, method="pbkdf2:sha256:600000")),
+                        ("generation", secrets.token_hex(24))])
+                    db.execute("DELETE FROM failures")
+                session.clear()
+                return redirect(url_for("login", password_changed="1"))
+        return render_template("recovery.html", error=error), 400 if error else 200
 
     @app.route("/founder/password", methods=["GET", "POST"])
     def change_password():

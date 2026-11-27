@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin dashboard | BeHeard Zimbabwe</title><link rel="stylesheet" href="/styles.css"><link rel="icon" href="/favicon.ico"></head>
+<title>Admin dashboard | BeHeard Zimbabwe</title><link rel="stylesheet" href="/styles.css"><link rel="icon" href="/favicon.ico"><script src="/admin-controls.js" defer></script></head>
 <body class="editor"><main class="wrap"><p class="kicker">BeHeard Zimbabwe · Ashley Mutamiri</p>
 {% macro token() %}<input type="hidden" name="csrf" value="{{ session.csrf }}">{% endmacro %}
 {% if view == 'login' %}
-<h1>Admin sign-in</h1>{% if request.args.get("password_changed") %}<p role="status">Password changed. Sign in with your new password.</p>{% endif %}
+<h1>Admin sign-in</h1><p><a href="/founder/recover">Forgot password? Owner recovery</a></p>{% if request.args.get("password_changed") %}<p role="status">Password changed. Sign in with your new password.</p>{% endif %}
 {% if ready %}<form method="post">{{ token() }}
 <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
 {% if error %}<p role="alert">{{ error }}</p>{% endif %}<button>Sign in</button></form>
