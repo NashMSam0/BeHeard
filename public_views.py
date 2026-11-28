@@ -56,10 +56,10 @@ def render_public(public, name):
     document = _render_public(public, name)
     hidden = set(re.findall(r"<!-- hidden-photo:([a-f0-9]{64}) -->", document))
     def keep_image(match):
-        image = re.search(r'<img\b[^>]*src="([^"]+)"', match[0])
+        image = re.search(r'<(?:img|video)\b[^>]*src="([^"]+)"', match[0])
         if image and hashlib.sha256(html.unescape(image[1]).encode()).hexdigest() in hidden:
             return ""
         return match[0]
-    document = re.sub(r'<a\b[^>]*>\s*<img\b[^>]*>\s*</a>|<img\b[^>]*>', keep_image, document)
+    document = re.sub(r'<figure\b[^>]*>\s*<video\b.*?</figure>|<video\b.*?</video>|<a\b[^>]*>\s*<img\b[^>]*>\s*</a>|<img\b[^>]*>', keep_image, document)
     document = re.sub(r'<figure\b[^>]*>\s*</figure>', "", document)
     return re.sub(r"<!-- hidden-photo:[a-f0-9]{64} -->", "", document)

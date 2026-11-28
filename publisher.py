@@ -698,15 +698,15 @@ def create_app(private=None, public=None):
         import hashlib
         picture_choices = []
         seen_pictures = set()
-        for image_match in re.finditer(r'<img\b[^>]*>', rendered_page):
+        for image_match in re.finditer(r'<(?:img|video)\b[^>]*>', rendered_page):
             src_match = re.search(r'src="([^"]+)"', image_match[0])
-            alt_match = re.search(r'alt="([^"]*)"', image_match[0])
+            alt_match = re.search(r'(?:alt|aria-label)="([^"]*)"', image_match[0])
             if not src_match:
                 continue
             src = html.unescape(src_match[1])
             key = hashlib.sha256(src.encode()).hexdigest()
             if key not in seen_pictures:
-                picture_choices.append({"key": key, "src": src, "alt": html.unescape(alt_match[1]) if alt_match else "Page photograph"})
+                picture_choices.append({"video": image_match[0].startswith("<video"), "key": key, "src": src, "alt": html.unescape(alt_match[1]) if alt_match else "Page video" if image_match[0].startswith("<video") else "Page photograph"})
                 seen_pictures.add(key)
 
         if request.method == "POST":
