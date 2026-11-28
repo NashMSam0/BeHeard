@@ -15,14 +15,14 @@
 <div class="admin-publication"><p role="status">{{ publication_status }}</p>
 <form method="post" action="{{ url_for('retry_publication') }}">{{ token() }}<button>Retry static deployment</button></form></div>
 {% if view == 'list' %}<p><a class="button" href="/admindashboard/pages">Edit website pages and photographs</a></p><h1>News and Events</h1><p><a class="button" href="{{ url_for('edit',item='new') }}">Create an update</a></p>
-{% for post in rows %}<article class="news-item"><h3><a href="{{ url_for('preview',item=post.id) }}">{{ post.title }}</a></h3>
+{% for post in rows %}<article class="news-item"><h3><a href="{{ url_for('preview',item=post.id) }}">{{ post.title }}</a></h3><a href="{{ url_for('edit',item=post.id) }}">Edit event details</a>
 <p>{{ post.day }} · {{ 'Draft' if post.live is none else ('Published' if post.live == post.revision else 'Published with draft changes') }}</p></article>
 {% else %}<p>No updates yet.</p>{% endfor %}
 {% elif view == 'edit' %}<h1>{{ 'Edit update' if row else 'New update' }}</h1><form method="post" enctype="multipart/form-data">{{ token() }}
 <input type="hidden" name="revision" value="{{ row.revision if row else 0 }}">
 <label>Title<input name="title" required maxlength="180" value="{{ row.title if row }}"></label>
 <label>Date<input type="date" required name="day" value="{{ row.day if row else today }}"></label>
-<label>Text<textarea required maxlength="30000" name="body" rows="9">{{ row.body if row }}</textarea></label>
+<label>Event description<textarea required maxlength="30000" name="body" rows="9">{{ row.body if row }}</textarea></label>
 <label>Photograph for this news update (optional)<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
 {% if row and row.photo %}<label><input type="checkbox" name="remove_photo"> Remove current photograph</label>{% endif %}
 <label>Description of this news photograph<input name="alt" maxlength="300" value="{{ row.alt if row }}"></label>

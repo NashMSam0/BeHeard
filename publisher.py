@@ -78,6 +78,15 @@ def publish_page(app, db):
 
     _, after = block.split(END)
 
+    # Adopt the original poster-only announcement into the ordinary draft workflow.
+    from christmas_event import CHRISTMAS_EVENT
+    announcement = CHRISTMAS_EVENT.strip()
+    if announcement in before:
+        event = ("childrens-christmas-party", 1, "Children’s Christmas Party", "2026-12-26", "", None, "")
+        db.execute("INSERT OR IGNORE INTO draft VALUES (?,?,?,?,?,?,?)", event)
+        db.execute("INSERT OR IGNORE INTO published VALUES (?,?,?,?,?,?,?)", event)
+        before = before.replace(announcement, "", 1)
+
     live = db.execute("SELECT * FROM published ORDER BY day DESC, id")
 
     with app.app_context():

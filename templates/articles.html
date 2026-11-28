@@ -1,8 +1,15 @@
 {% for article in articles %}
-<article class="news-item">
-  <time datetime="{{ article.day }}">{{ article.day }}</time>
+{% set christmas = article.id == 'childrens-christmas-party' %}
+<article class="news-item{% if christmas %} christmas-event{% endif %}"{% if christmas %} id="childrens-christmas-party"{% endif %}>
+  <time datetime="{{ article.day }}">{{ '26 December 2026' if christmas and article.day == '2026-12-26' else article.day }}</time>
   <h3>{{ article.title }}</h3>
   {% if article.photo %}<img src="data:image/jpeg;base64,{{ article.photo }}" alt="{{ article.alt }}">{% endif %}
-  <p class="news-text">{{ article.body }}</p>
+  {% if article.body %}<p class="news-text">{{ article.body }}</p>{% endif %}
+  {% if christmas %}
+  <div class="event-posters">
+    <a href="/christmas-outreach.jpg"><img src="/christmas-outreach.jpg" alt="Community Christmas Outreach Initiative and sponsorship poster" loading="lazy"></a>
+    <a href="/christmas-programme.jpg"><img src="/christmas-programme.jpg" alt="Children’s Christmas Party programme and timetable" loading="lazy"></a>
+  </div>
+  {% endif %}
 </article>
 {% endfor %}
