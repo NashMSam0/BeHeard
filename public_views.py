@@ -5,7 +5,7 @@ import re
 from flask import render_template
 
 
-def render_public(public, name):
+def _render_public(public, name):
     public = Path(public)
     document = (public / name).read_text(encoding="utf-8")
     document = document.replace("</head>", '<link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head>', 1)
@@ -47,3 +47,17 @@ def render_public(public, name):
     news = stories[start:end + len('</section>')]
     shortcut = '<a class="home-news-shortcut" href="#news">News and Events <span aria-hidden="true">↓</span></a>'
     return document.replace('</main>', news + '\n</main>\n' + shortcut, 1)
+
+def render_public(public, name):
+    import hashlib
+    import html
+    document = _render_public(public, name)
+    hidden = set(re.findall(r"<!-- hidden-photo:([a-f0-9]{64}) -->", document))
+    def keep_image(match):
+        image = re.search(r'<img\b[^>]*src="([^"]+)"', match[0])
+        if image and hashlib.sha256(html.unescape(image[1]).encode()).hexdigest() in hidden:
+            return ""
+        return match[0]
+    document = re.sub(r'<a\b[^>]*>\s*<img\b[^>]*>\s*</a>|<img\b[^>]*>', keep_image, document)
+    document = re.sub(r'<figure\b[^>]*>\s*</figure>', "", document)
+    return re.sub(r"<!-- hidden-photo:[a-f0-9]{64} -->", "", document)

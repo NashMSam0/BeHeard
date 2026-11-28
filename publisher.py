@@ -684,6 +684,22 @@ def create_app(private=None, public=None):
 
             fields.append({"label": label, "text": html.unescape(match[3])})
 
+        from public_views import render_public
+        rendered_page = render_public(public, name)
+        import hashlib
+        picture_choices = []
+        seen_pictures = set()
+        for image_match in re.finditer(r'<img\b[^>]*>', rendered_page):
+            src_match = re.search(r'src="([^"]+)"', image_match[0])
+            alt_match = re.search(r'alt="([^"]*)"', image_match[0])
+            if not src_match:
+                continue
+            src = html.unescape(src_match[1])
+            key = hashlib.sha256(src.encode()).hexdigest()
+            if key not in seen_pictures:
+                picture_choices.append({"key": key, "src": src, "alt": html.unescape(alt_match[1]) if alt_match else "Page photograph"})
+                seen_pictures.add(key)
+
         if request.method == "POST":
 
             import hashlib
@@ -778,6 +794,13 @@ def create_app(private=None, public=None):
 
                     source = re.sub(r'<!-- home slides -->.*?<!-- end home slides -->', '', source, flags=re.S)
 
+            for key in request.form.getlist("delete_picture"):
+                if key not in seen_pictures:
+                    abort(400, "Reopen the editor before deleting photographs.")
+                marker = "<!-- hidden-photo:" + key + " -->"
+                if marker not in source:
+                    source = source.replace("</main>", marker + "</main>", 1)
+
             with NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent, delete=False) as temp:
 
                 temp.write(source)
@@ -791,7 +814,7 @@ def create_app(private=None, public=None):
         from gallery_categories import CATEGORIES
         from image_placements import sections
         photo_sections = [(key, label) for key, label, match in sections(source)]
-        return render_template("pages.html", names=names, name=name, gallery_categories=CATEGORIES, photo_sections=photo_sections,
+        return render_template("pages.html", names=names, name=name, gallery_categories=CATEGORIES, photo_sections=photo_sections, picture_choices=picture_choices,
 
             fields=fields, current_photo=current_photo, slide_previews=slide_previews,
 

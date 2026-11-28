@@ -456,3 +456,5 @@ body[data-page=home] main>section:first-child{overflow:clip}
 .password-eye{margin-top:8px!important;padding:6px 12px!important;min-height:36px!important}.intake .donation-method{margin-block:20px}.intake .donation-method form{margin-top:16px}
 
 .section-photo{max-width:720px;margin:24px auto 0;padding-inline:24px}.section-photo img{display:block;max-width:100%;max-height:480px;width:auto;height:auto;margin:auto;object-fit:contain;border-radius:10px}.editor select{display:block;width:100%;padding:12px;font:inherit;border:1px solid var(--rule);border-radius:6px}
+
+.admin-picture-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.admin-picture-list img{width:100%;height:140px;object-fit:contain;background:var(--sage)}.admin-picture-list label{border:1px solid var(--rule);padding:12px;border-radius:8px}.admin-picture-list span{display:block;margin-top:10px}@media(max-width:650px){.admin-picture-list{grid-template-columns:1fr 1fr}}

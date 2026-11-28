@@ -364,3 +364,5 @@ The page editor previews saved pages through authenticated /admindashboard/page-
 Gallery page editing provides a category selector for uploaded photographs. New images append to their chosen category and persist inside the existing durable HTML snapshots. Existing gallery assets are preserved.
 
 All general page photograph uploads require a section destination. A new photo replaces only that section’s uploaded image. Gallery uploads retain category selection; slideshow and news uploads retain their explicitly labelled destinations. Existing photographs remain in place.
+
+Page editors list current pictures with per-photo deletion checkboxes. Deletion suppresses the selected image on that page in both Flask previews and static exports. Original files and historical snapshots are retained.
