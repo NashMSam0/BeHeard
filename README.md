@@ -368,4 +368,4 @@ All general page photograph uploads require a section destination. A new photo r
 
 Page editors list current pictures with per-photo deletion checkboxes. Deletion suppresses the selected image on that page in both Flask previews and static exports. Original files and historical snapshots are retained.
 
-The original homepage banner photograph and the two additional photographs crossfade inside the banner every 1.5 seconds, with a pause control and reduced-motion support. Form submissions can be moved to Deleted submissions and restored from the admin inbox.
+The original homepage banner photograph and the two additional photographs crossfade inside the banner every 3 seconds, with reduced-motion support. Form submissions can be moved to Deleted submissions and restored from the admin inbox.

@@ -306,20 +306,6 @@ h2 { line-height:1.14; }
 .hero-photos img[src$="home-education-support.jpg"] { object-position: center 45%; }
 .hero-photos:not(.rotating) img:first-child,
 .hero-photos img.is-current { opacity: 1; }
-.hero-photo-toggle {
-  position: absolute;
-  z-index: 2;
-  top: calc(var(--header-height) + 12px);
-  right: max(16px, 3vw);
-  padding: 8px 14px;
-  border: 1px solid rgb(255 255 255 / 70%);
-  border-radius: 24px;
-  background: #14243b;
-  color: white;
-  font: inherit;
-  font-size: .875rem;
-  cursor: pointer;
-}
 @media (prefers-reduced-motion: reduce) {
   .hero-photos img { transition: none; }
 }

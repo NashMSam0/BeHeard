@@ -289,10 +289,8 @@ document.querySelectorAll('.education-categories').forEach((education, groupInde
 const heroPhotos = document.querySelector('.hero-photos');
 if (heroPhotos && heroPhotos.children.length > 1) {
   const photos = Array.from(heroPhotos.children);
-  const control = document.querySelector('.hero-photo-toggle');
   const preference = matchMedia('(prefers-reduced-motion: reduce)');
   let current = 0;
-  let paused = preference.matches;
   let timer;
 
   function showPhoto(index) {
@@ -305,26 +303,17 @@ if (heroPhotos && heroPhotos.children.length > 1) {
 
   function updatePlayback() {
     clearInterval(timer);
-    control.textContent = paused ? 'Play photographs' : 'Pause photographs';
-    if (paused || document.hidden) return;
+    if (preference.matches || document.hidden) return;
     timer = setInterval(() => {
       const next = (current + 1) % photos.length;
       if (photos[next].naturalWidth) showPhoto(next);
-    }, 1500);
+    }, 3000);
   }
 
   photos.forEach(photo => photo.setAttribute('aria-hidden', 'true'));
   showPhoto(0);
   heroPhotos.classList.add('rotating');
-  control.hidden = false;
-  control.addEventListener('click', () => {
-    paused = !paused;
-    updatePlayback();
-  });
-  preference.addEventListener('change', () => {
-    paused = preference.matches;
-    updatePlayback();
-  });
+  preference.addEventListener('change', updatePlayback);
   document.addEventListener('visibilitychange', updatePlayback);
   updatePlayback();
 }
