@@ -23,9 +23,9 @@
 <label>Title<input name="title" required maxlength="180" value="{{ row.title if row }}"></label>
 <label>Date<input type="date" required name="day" value="{{ row.day if row else today }}"></label>
 <label>Text<textarea required maxlength="30000" name="body" rows="9">{{ row.body if row }}</textarea></label>
-<label>Approved photograph (optional)<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
+<label>Photograph for this news update (optional)<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
 {% if row and row.photo %}<label><input type="checkbox" name="remove_photo"> Remove current photograph</label>{% endif %}
-<label>Photo description<input name="alt" maxlength="300" value="{{ row.alt if row }}"></label>
+<label>Description of this news photograph<input name="alt" maxlength="300" value="{{ row.alt if row }}"></label>
 <button>Save draft and preview</button></form>
 {% else %}<h1>Private preview</h1>{% with articles=[row] %}{% include 'articles.html' %}{% endwith %}
 <div class="actions"><a href="{{ url_for('edit',item=row.id) }}">Edit draft</a>

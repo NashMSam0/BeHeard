@@ -712,9 +712,13 @@ def create_app(private=None, public=None):
                     if category not in CATEGORIES:
                         abort(400, "Choose a gallery category.")
                     image = '<figure data-gallery-category="' + category + '"><img alt="' + html.escape(alt, quote=True) + '" src="data:image/jpeg;base64,' + photo + '"></figure>'
+                    source = source.replace('</main>', image + '</main>')
                 else:
-                    source = re.sub(r'<figure class="page-photo">.*?</figure>', '', source, flags=re.S)
-                source = source.replace('</main>', image + '</main>')
+                    from image_placements import place_photo
+                    try:
+                        source = place_photo(source, request.form.get("photo_section", ""), photo, alt)
+                    except ValueError as error:
+                        abort(400, str(error))
 
             if request.form.get("remove"):
 
@@ -777,7 +781,9 @@ def create_app(private=None, public=None):
         import hashlib
 
         from gallery_categories import CATEGORIES
-        return render_template("pages.html", names=names, name=name, gallery_categories=CATEGORIES,
+        from image_placements import sections
+        photo_sections = [(key, label) for key, label, match in sections(source)]
+        return render_template("pages.html", names=names, name=name, gallery_categories=CATEGORIES, photo_sections=photo_sections,
 
             fields=fields, current_photo=current_photo, slide_previews=slide_previews,
 

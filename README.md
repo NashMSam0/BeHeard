@@ -362,3 +362,5 @@ Admins can move submissions to Deleted submissions and restore them. Records rem
 The page editor previews saved pages through authenticated /founder/page-preview/<name> routes. These allow same-origin framing for the editor; other admin pages retain frame denial. Public-host redirects no longer interfere with editor previews.
 
 Gallery page editing provides a category selector for uploaded photographs. New images append to their chosen category and persist inside the existing durable HTML snapshots. Existing gallery assets are preserved.
+
+All general page photograph uploads require a section destination. A new photo replaces only that section’s uploaded image. Gallery uploads retain category selection; slideshow and news uploads retain their explicitly labelled destinations. Existing photographs remain in place.
