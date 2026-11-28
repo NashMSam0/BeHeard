@@ -2,8 +2,8 @@
 
 ## Current deployment — 27 November 2026
 
-- Public website — https://beheard-public.onrender.com/
-- Founder dashboard — https://beheard-zimbabwe.onrender.com/founder/
+- [Public static website](https://beheard-public.onrender.com/)
+- [Admin dashboard](https://beheard-zimbabwe.onrender.com/founder/)
 - Public pages on the former address redirect to the static site.
 - Public static hosting stays available independently of Flask inactivity. The free admin service can sleep.
 - Supabase holds revision-checked durable snapshots of pages, the private database, drafts and credentials.
