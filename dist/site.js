@@ -117,7 +117,7 @@ if (footer) {
       <a href="/involved.html#volunteer">Volunteer and Partner With Us</a>
       <a href="/contact.html">Contact Us</a>
       <a href="/privacy.html">Privacy Policy</a>
-    </nav></div><div class="wrap creator-credit"><a href="https://wa.me/263773447241">Created by <strong>Nash Tech</strong></a><details><summary>Scan to contact Nash Tech</summary><a href="https://wa.me/263773447241" aria-label="Contact Nash Tech on WhatsApp"><img src="/nash-tech-whatsapp-qr.png" alt="QR code opening Nash Tech on WhatsApp at +263 77 344 7241" width="160" height="160" loading="lazy"></a></details></div></footer>`;
+    </nav></div><div class="wrap creator-credit"><a href="https://wa.me/263773447241">Nash Tech</a><details><summary>QR code</summary><a href="https://wa.me/263773447241" aria-label="Contact Nash Tech on WhatsApp"><img src="/nash-tech-whatsapp-qr.png" alt="QR code opening Nash Tech on WhatsApp at +263 77 344 7241" width="160" height="160" loading="lazy"></a></details></div></footer>`;
 }
 const mode = document.createElement('select');
 mode.className = 'theme-switch';
