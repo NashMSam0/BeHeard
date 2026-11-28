@@ -1,8 +1,9 @@
 # BeHeard Zimbabwe
 
-## Current deployment — 27 November 2026
+## Current deployment — 28 November 2026
 
-- [Public static website](https://beheard-public.onrender.com/)
+- [Public static website](https://www.beheardzim.org/)
+- Custom domain: Cloudflare DNS-only CNAME records for `@` and `www` point to `beheard-public.onrender.com`; Render manages HTTPS.
 - [Admin dashboard](https://beheard-zimbabwe.onrender.com/admindashboard/)
 - Public pages on the former address redirect to the static site.
 - Public static hosting stays available independently of Flask inactivity. The free admin service can sleep.

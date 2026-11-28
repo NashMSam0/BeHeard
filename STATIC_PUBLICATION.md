@@ -1,7 +1,7 @@
 # Static public site and Flask founder dashboard
 
 Production rollout completed on 27 November 2026. The public site is live at
-https://beheard-public.onrender.com/. The Flask service at
+https://www.beheardzim.org/. The Flask service at
 https://beheard-zimbabwe.onrender.com/ remains the sole durable state writer and
 serves the founder dashboard. Public page requests redirect to the static site.
 Automatic production deployment through the private hook is verified. A separate

@@ -21,7 +21,7 @@ services:
       - key: BEHEARD_STATE_TOKEN
         sync: false
       - key: BEHEARD_PUBLIC_URL
-        value: https://beheard-public.onrender.com
+        value: https://www.beheardzim.org
       - key: BEHEARD_EXPORT_TOKEN
         sync: false
       - key: BEHEARD_STATIC_DEPLOY_HOOK
@@ -43,7 +43,7 @@ services:
       - key: BEHEARD_EXPORT_TOKEN
         sync: false
       - key: BEHEARD_PUBLIC_URL
-        value: https://beheard-public.onrender.com
+        value: https://www.beheardzim.org
       - key: BEHEARD_STATIC_STAGING
         value: "0"
     routes:
