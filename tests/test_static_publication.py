@@ -135,6 +135,18 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("password_changed", response.location)
 
+    def test_delete_gallery_picture(self):
+        csrf = self.login()
+        response = self.client.get("/admindashboard/pages?page=gallery.html")
+        version = re.search(rb'name="version" value="([^"]+)"', response.data)[1].decode()
+        key = hashlib.sha256(b"/stationary-1.jpg").hexdigest()
+        response = self.client.post("/admindashboard/pages", data={"csrf": csrf, "page": "gallery.html",
+            "version": version, "delete_picture": key})
+        self.assertEqual(response.status_code, 302)
+        files, _ = validate_artifact(self.export(), ORIGIN)
+        self.assertNotIn(b'src="/stationary-1.jpg"', files["gallery.html"])
+        self.assertIn("stationary-1.jpg", files)
+
     def test_gallery_category_upload(self):
         csrf = self.login()
         response = self.client.get("/admindashboard/pages?page=gallery.html")
