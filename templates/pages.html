@@ -23,4 +23,4 @@
 
 <button>Save changes</button></form>
 
-<aside class="page-preview"><h2>Where your text appears</h2><p>The preview shows the saved page. Save changes to refresh it.</p><iframe title="{{ names[name] }} page preview" src="/{{ name }}"></iframe><p><a href="/{{ name }}" target="_blank" rel="noopener">Open {{ names[name] }} page</a></p></aside></div></main></body></html>
+<aside class="page-preview"><h2>Where your text appears</h2><p>The preview shows the saved page. Save changes to refresh it.</p><iframe title="{{ names[name] }} page preview" src="{{ url_for('page_preview', name=name) }}"></iframe><p><a href="{{ url_for('page_preview', name=name) }}" target="_blank" rel="noopener">Open {{ names[name] }} page</a></p></aside></div></main></body></html>

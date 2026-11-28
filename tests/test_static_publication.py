@@ -135,6 +135,16 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("password_changed", response.location)
 
+    def test_authenticated_editor_page_preview(self):
+        self.assertEqual(self.client.get("/founder/page-preview/index.html").status_code, 302)
+        self.login()
+        response = self.client.get("/founder/page-preview/index.html")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["X-Frame-Options"], "SAMEORIGIN")
+        self.assertIn("frame-ancestors 'self'", response.headers["Content-Security-Policy"])
+        self.assertEqual(self.client.get("/founder/page-preview/private.sqlite3").status_code, 404)
+        self.assertEqual(self.client.get("/founder/").headers["X-Frame-Options"], "DENY")
+
     def test_admin_password_change(self):
         csrf = self.login()
         changed = "new-password-" + "z" * 25

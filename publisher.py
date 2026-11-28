@@ -347,6 +347,9 @@ def create_app(private=None, public=None):
 
                 "Content-Security-Policy":"default-src 'self'; img-src 'self' data: blob:; frame-ancestors 'none'; form-action 'self'; base-uri 'none'"})
 
+        if request.endpoint == "page_preview":
+            response.headers["X-Frame-Options"] = "SAMEORIGIN"
+            response.headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data: blob:; frame-ancestors 'self'; form-action 'self'; base-uri 'none'"
         return response
 
 
@@ -362,6 +365,14 @@ def create_app(private=None, public=None):
     def home():
         from public_views import render_public
         return render_public(public, "index.html")
+
+    @app.get("/founder/page-preview/<name>")
+    def page_preview(name):
+        from public_manifest import PUBLIC_PAGES
+        from public_views import render_public
+        if name not in PUBLIC_PAGES:
+            abort(404)
+        return app.response_class(render_public(public, name), mimetype="text/html")
 
     @app.get("/gallery.html")
     def gallery():
