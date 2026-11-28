@@ -135,6 +135,25 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("password_changed", response.location)
 
+    def test_gallery_category_upload(self):
+        csrf = self.login()
+        response = self.client.get("/founder/pages?page=gallery.html")
+        self.assertIn(b'name="gallery_category"', response.data)
+        version = re.search(rb'name="version" value="([^"]+)"', response.data)[1].decode()
+        from PIL import Image
+        image = BytesIO()
+        Image.new("RGB", (20, 20), "blue").save(image, format="JPEG")
+        image.seek(0)
+        response = self.client.post("/founder/pages", data={"csrf": csrf, "page": "gallery.html",
+            "version": version, "gallery_category": "birthdays", "alt": "Approved birthday upload",
+            "photo": (image, "birthday.jpg")}, content_type="multipart/form-data")
+        self.assertEqual(response.status_code, 302)
+        page = self.client.get("/gallery.html")
+        self.assertIn(b"Approved birthday upload", page.data)
+        self.assertNotIn(b'data-gallery-category=', page.data)
+        files, _ = validate_artifact(self.export(), ORIGIN)
+        self.assertIn(b"Approved birthday upload", files["gallery.html"])
+
     def test_authenticated_editor_page_preview(self):
         self.assertEqual(self.client.get("/founder/page-preview/index.html").status_code, 302)
         self.login()
