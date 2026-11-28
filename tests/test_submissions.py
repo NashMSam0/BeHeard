@@ -32,7 +32,7 @@ class SubmissionTests(unittest.TestCase):
         self.assertTrue(row["consent"])
         self.assertEqual(row["notified"], 0)
         db.close()
-        self.assertEqual(self.client.get("/founder/submissions").status_code, 302)
+        self.assertEqual(self.client.get("/admindashboard/submissions").status_code, 302)
         self.assertEqual(response.headers["Cache-Control"], "no-store")
 
     def test_render_https_origin_behind_proxy(self):

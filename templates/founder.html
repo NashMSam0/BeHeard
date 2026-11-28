@@ -4,17 +4,17 @@
 <body class="editor"><main class="wrap"><p class="kicker">BeHeard Zimbabwe · Ashley Mutamiri</p>
 {% macro token() %}<input type="hidden" name="csrf" value="{{ session.csrf }}">{% endmacro %}
 {% if view == 'login' %}
-<h1>Admin sign-in</h1><p><a href="/founder/recover">Forgot password? Owner recovery</a></p>{% if request.args.get("password_changed") %}<p role="status">Password changed. Sign in with your new password.</p>{% endif %}
+<h1>Admin sign-in</h1><p><a href="/admindashboard/recover">Forgot password? Owner recovery</a></p>{% if request.args.get("password_changed") %}<p role="status">Password changed. Sign in with your new password.</p>{% endif %}
 {% if ready %}<form method="post">{{ token() }}
 <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
 {% if error %}<p role="alert">{{ error }}</p>{% endif %}<button>Sign in</button></form>
 {% else %}<p>Set the founder password privately on this computer to activate sign-in.</p>{% endif %}
 {% else %}
-<nav class="admin-nav"><a href="{{ url_for('dashboard') }}">Dashboard</a><a href="/founder/submissions">Form submissions</a><a href="/founder/password">Change password</a><a href="/stories.html#news">Public news</a>
+<nav class="admin-nav"><a href="{{ url_for('dashboard') }}">Dashboard</a><a href="/admindashboard/submissions">Form submissions</a><a href="/admindashboard/password">Change password</a><a href="/stories.html#news">Public news</a>
 <form method="post" action="{{ url_for('logout') }}">{{ token() }}<button>Sign out</button></form></nav>
 <div class="admin-publication"><p role="status">{{ publication_status }}</p>
 <form method="post" action="{{ url_for('retry_publication') }}">{{ token() }}<button>Retry static deployment</button></form></div>
-{% if view == 'list' %}<p><a class="button" href="/founder/pages">Edit website pages and photographs</a></p><h1>News and Events</h1><p><a class="button" href="{{ url_for('edit',item='new') }}">Create an update</a></p>
+{% if view == 'list' %}<p><a class="button" href="/admindashboard/pages">Edit website pages and photographs</a></p><h1>News and Events</h1><p><a class="button" href="{{ url_for('edit',item='new') }}">Create an update</a></p>
 {% for post in rows %}<article class="news-item"><h3><a href="{{ url_for('preview',item=post.id) }}">{{ post.title }}</a></h3>
 <p>{{ post.day }} · {{ 'Draft' if post.live is none else ('Published' if post.live == post.revision else 'Published with draft changes') }}</p></article>
 {% else %}<p>No updates yet.</p>{% endfor %}

@@ -95,12 +95,12 @@ class PublicationTests(unittest.TestCase):
         self.trigger.reset_mock()
 
     def login(self):
-        self.client.get("/founder/login")
-        with self.client.session_transaction(path="/founder/") as s:
+        self.client.get("/admindashboard/login")
+        with self.client.session_transaction(path="/admindashboard/") as s:
             csrf = s["csrf"]
-        response = self.client.post("/founder/login", data={"csrf": csrf, "password": PASSWORD})
+        response = self.client.post("/admindashboard/login", data={"csrf": csrf, "password": PASSWORD})
         self.assertEqual(response.status_code, 302)
-        with self.client.session_transaction(path="/founder/") as s:
+        with self.client.session_transaction(path="/admindashboard/") as s:
             return s["csrf"]
 
     def export(self):
@@ -109,7 +109,7 @@ class PublicationTests(unittest.TestCase):
         return response.data
 
     def draft(self, csrf, title="PRIVATE DRAFT SENTINEL", body="Private unapproved text"):
-        response = self.client.post("/founder/edit/new", data={"csrf": csrf, "revision": "0",
+        response = self.client.post("/admindashboard/edit/new", data={"csrf": csrf, "revision": "0",
             "title": title, "body": body, "day": "2026-11-26"})
         self.assertEqual(response.status_code, 302)
         return response.location.rsplit("/", 1)[1]
@@ -119,32 +119,32 @@ class PublicationTests(unittest.TestCase):
         with closing(connect(self.app)) as db, db:
             db.execute("INSERT INTO submissions (id,kind,created,name,email,phone,message,consent,consent_version,fingerprint) VALUES (?,?,?,?,?,?,?,?,?,?)",
                 ("trash-test", "enquiry", "2026-11-27", "Test", "test@example.org", "", "Test message", "yes", "1", "test"))
-        self.assertEqual(self.client.post("/founder/submissions/trash-test/delete", data={"csrf": csrf}).status_code, 302)
-        self.assertNotIn(b"Test message", self.client.get("/founder/submissions").data)
-        self.assertIn(b"Test message", self.client.get("/founder/submissions?trash=1").data)
-        self.client.post("/founder/submissions/trash-test/restore", data={"csrf": csrf})
-        self.assertIn(b"Test message", self.client.get("/founder/submissions").data)
-        self.client.post("/founder/logout", data={"csrf": csrf})
-        self.client.get("/founder/recover")
-        with self.client.session_transaction(path="/founder/") as state:
+        self.assertEqual(self.client.post("/admindashboard/submissions/trash-test/delete", data={"csrf": csrf}).status_code, 302)
+        self.assertNotIn(b"Test message", self.client.get("/admindashboard/submissions").data)
+        self.assertIn(b"Test message", self.client.get("/admindashboard/submissions?trash=1").data)
+        self.client.post("/admindashboard/submissions/trash-test/restore", data={"csrf": csrf})
+        self.assertIn(b"Test message", self.client.get("/admindashboard/submissions").data)
+        self.client.post("/admindashboard/logout", data={"csrf": csrf})
+        self.client.get("/admindashboard/recover")
+        with self.client.session_transaction(path="/admindashboard/") as state:
             csrf = state["csrf"]
         code = "owner-recovery-test-" + "x" * 30
         with patch.dict(os.environ, {"BEHEARD_OWNER_RECOVERY_HASH": generate_password_hash(code)}):
-            response = self.client.post("/founder/recover", data={"csrf": csrf, "recovery_code": code,
+            response = self.client.post("/admindashboard/recover", data={"csrf": csrf, "recovery_code": code,
                 "new_password": "replacement-password-long", "confirm_password": "replacement-password-long"})
         self.assertEqual(response.status_code, 302)
         self.assertIn("password_changed", response.location)
 
     def test_gallery_category_upload(self):
         csrf = self.login()
-        response = self.client.get("/founder/pages?page=gallery.html")
+        response = self.client.get("/admindashboard/pages?page=gallery.html")
         self.assertIn(b'name="gallery_category"', response.data)
         version = re.search(rb'name="version" value="([^"]+)"', response.data)[1].decode()
         from PIL import Image
         image = BytesIO()
         Image.new("RGB", (20, 20), "blue").save(image, format="JPEG")
         image.seek(0)
-        response = self.client.post("/founder/pages", data={"csrf": csrf, "page": "gallery.html",
+        response = self.client.post("/admindashboard/pages", data={"csrf": csrf, "page": "gallery.html",
             "version": version, "gallery_category": "birthdays", "alt": "Approved birthday upload",
             "photo": (image, "birthday.jpg")}, content_type="multipart/form-data")
         self.assertEqual(response.status_code, 302)
@@ -155,30 +155,30 @@ class PublicationTests(unittest.TestCase):
         self.assertIn(b"Approved birthday upload", files["gallery.html"])
 
     def test_authenticated_editor_page_preview(self):
-        self.assertEqual(self.client.get("/founder/page-preview/index.html").status_code, 302)
+        self.assertEqual(self.client.get("/admindashboard/page-preview/index.html").status_code, 302)
         self.login()
-        response = self.client.get("/founder/page-preview/index.html")
+        response = self.client.get("/admindashboard/page-preview/index.html")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["X-Frame-Options"], "SAMEORIGIN")
         self.assertIn("frame-ancestors 'self'", response.headers["Content-Security-Policy"])
-        self.assertEqual(self.client.get("/founder/page-preview/private.sqlite3").status_code, 404)
-        self.assertEqual(self.client.get("/founder/").headers["X-Frame-Options"], "DENY")
+        self.assertEqual(self.client.get("/admindashboard/page-preview/private.sqlite3").status_code, 404)
+        self.assertEqual(self.client.get("/admindashboard/").headers["X-Frame-Options"], "DENY")
 
     def test_admin_password_change(self):
         csrf = self.login()
         changed = "new-password-" + "z" * 25
-        response = self.client.post("/founder/password", data={
+        response = self.client.post("/admindashboard/password", data={
             "csrf": csrf, "current_password": PASSWORD,
             "new_password": changed, "confirm_password": changed})
         self.assertEqual(response.status_code, 302)
         self.assertIn("password_changed", response.location)
-        self.assertEqual(self.client.get("/founder/").status_code, 302)
-        self.client.get("/founder/login")
-        with self.client.session_transaction(path="/founder/") as session:
+        self.assertEqual(self.client.get("/admindashboard/").status_code, 302)
+        self.client.get("/admindashboard/login")
+        with self.client.session_transaction(path="/admindashboard/") as session:
             csrf = session["csrf"]
-        response = self.client.post("/founder/login", data={"csrf": csrf, "password": changed})
+        response = self.client.post("/admindashboard/login", data={"csrf": csrf, "password": changed})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(self.client.get("/founder/password").status_code, 200)
+        self.assertEqual(self.client.get("/admindashboard/password").status_code, 200)
 
     def test_export_matches_every_live_page_and_preserves_all_media(self):
         files, digest = validate_artifact(self.export(), ORIGIN)
@@ -207,26 +207,26 @@ class PublicationTests(unittest.TestCase):
         exported = b"".join(files.values())
         for sentinel in (b"PRIVATE", TOKEN.encode(), PASSWORD.encode(), b"test-generation", b"publisher.sqlite3"):
             self.assertNotIn(sentinel, exported)
-        for path in ("/secret.env", "/private.jpg", "/.beheard/publisher.sqlite3", "/templates/founder.html"):
+        for path in ("/secret.env", "/private.jpg", "/.beheard/publisher.sqlite3", "/templates/admindashboard.html"):
             self.assertEqual(self.client.get(path).status_code, 404)
         self.assertNotIn("editor.js", files)
 
     def test_publish_edit_and_withdraw_and_escaping(self):
         csrf = self.login()
         item = self.draft(csrf, title="Approved <title>", body="Approved <script>alert(1)</script>")
-        self.client.post("/founder/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
+        self.client.post("/admindashboard/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
         self.assertEqual(self.trigger.call_count, 1)
         files, _ = validate_artifact(self.export(), ORIGIN)
         for name in ("index.html", "stories.html"):
             self.assertIn(b"Approved &lt;title&gt;", files[name])
             self.assertNotIn(b"<script>alert(1)", files[name])
-        response = self.client.post("/founder/edit/" + item, data={"csrf": csrf, "revision": 1,
+        response = self.client.post("/admindashboard/edit/" + item, data={"csrf": csrf, "revision": 1,
             "title": "UNPUBLISHED REVISION", "body": "Keep me private", "day": "2026-11-26"})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.trigger.call_count, 1)
         files, _ = validate_artifact(self.export(), ORIGIN)
         self.assertNotIn(b"UNPUBLISHED REVISION", files["stories.html"])
-        self.client.post("/founder/status/" + item, data={"csrf": csrf, "revision": 2, "action": "withdraw"})
+        self.client.post("/admindashboard/status/" + item, data={"csrf": csrf, "revision": 2, "action": "withdraw"})
         files, _ = validate_artifact(self.export(), ORIGIN)
         self.assertNotIn(b"Approved &lt;title&gt;", files["stories.html"])
         self.assertEqual(self.trigger.call_count, 2)
@@ -238,21 +238,21 @@ class PublicationTests(unittest.TestCase):
         old = (self.public / "about.html").read_text("utf-8")
         version = hashlib.sha256(old.encode()).hexdigest()
         data = {"csrf": csrf, "page": "about.html", "version": version, "text_0": "An approved edited description."}
-        response = self.client.post("/founder/pages", data=data)
+        response = self.client.post("/admindashboard/pages", data=data)
         self.assertEqual(response.status_code, 302)
         self.trigger.assert_called_once()
         files, _ = validate_artifact(self.export(), ORIGIN)
         self.assertIn(b"An approved edited description.", files["about.html"])
-        self.assertEqual(self.client.post("/founder/pages", data=data).status_code, 409)
-        self.assertEqual(self.client.post("/founder/pages", data={**data, "csrf": "wrong"}).status_code, 403)
-        self.assertEqual(self.app.test_client().post("/founder/publication/retry").status_code, 403)
+        self.assertEqual(self.client.post("/admindashboard/pages", data=data).status_code, 409)
+        self.assertEqual(self.client.post("/admindashboard/pages", data={**data, "csrf": "wrong"}).status_code, 403)
+        self.assertEqual(self.app.test_client().post("/admindashboard/publication/retry").status_code, 403)
 
     def test_storage_failure_keeps_previous_export_and_durable_state(self):
         csrf = self.login()
         item = self.draft(csrf)
         before = self.export()
         FakeCloud.fail = True
-        response = self.client.post("/founder/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
+        response = self.client.post("/admindashboard/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
         self.assertEqual(response.status_code, 503)
         self.assertTrue(before == self.export(), "A failed save changed the public export")
         self.trigger.assert_not_called()
@@ -263,9 +263,9 @@ class PublicationTests(unittest.TestCase):
         csrf = self.login()
         item = self.draft(csrf, title="Approved durable update")
         self.trigger.side_effect = RuntimeError("test")
-        response = self.client.post("/founder/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
+        response = self.client.post("/admindashboard/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
         self.assertEqual(response.status_code, 302)
-        self.assertIn(b"pending", self.client.get("/founder/").data)
+        self.assertIn(b"pending", self.client.get("/admindashboard/").data)
         self.trigger.side_effect = None
         fresh = create_app(self.private, self.public)
         with fresh.test_client().get("/stories.html") as response:
@@ -280,7 +280,7 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(self.client.get("/publication/artifact.zip?token=" + TOKEN).status_code, 404)
         self.assertEqual(self.client.get("/publication/artifact.zip?token=" + TOKEN,
             headers={"Authorization": "Bearer " + TOKEN}).status_code, 404)
-        self.assertEqual(self.client.get("/founder/login").headers["X-Robots-Tag"], "noindex, nofollow")
+        self.assertEqual(self.client.get("/admindashboard/login").headers["X-Robots-Tag"], "noindex, nofollow")
         self.assertEqual(self.client.get("/index.html").status_code, 301)
         self.app.config["ADMIN_ONLY"] = True
         self.assertIn(b"Disallow: /", self.client.get("/robots.txt").data)
@@ -288,7 +288,7 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(self.client.get("/").location, ORIGIN + "/")
         self.assertEqual(self.client.get("/stories.html").location, ORIGIN + "/stories.html")
         self.assertEqual(self.client.get("/healthz").status_code, 200)
-        self.assertEqual(self.client.get("/founder/login").status_code, 200)
+        self.assertEqual(self.client.get("/admindashboard/login").status_code, 200)
 
     def test_build_atomic_and_staging_noindex_and_no_stale_fallback(self):
         output = Path(self.tmp.name) / "build"
@@ -337,7 +337,7 @@ class PublicationTests(unittest.TestCase):
 
     def test_manual_retry_can_repeat_an_accepted_but_failed_build(self):
         csrf = self.login()
-        response = self.client.post("/founder/publication/retry", data={"csrf": csrf})
+        response = self.client.post("/admindashboard/publication/retry", data={"csrf": csrf})
         self.assertEqual(response.status_code, 302)
         self.trigger.assert_called_once()
 
@@ -345,11 +345,11 @@ class PublicationTests(unittest.TestCase):
         csrf = self.login()
         item = self.draft(csrf)
         FakeCloud.fail, FakeCloud.fail_restore = True, True
-        response = self.client.post("/founder/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
+        response = self.client.post("/admindashboard/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
         self.assertEqual(response.status_code, 503)
         self.assertEqual(self.client.get("/publication/artifact.zip", headers={"Authorization": "Bearer " + TOKEN}).status_code, 503)
-        self.assertEqual(self.client.get("/founder/").status_code, 503)
-        self.assertEqual(self.client.post("/founder/publication/retry", data={"csrf": csrf}).status_code, 503)
+        self.assertEqual(self.client.get("/admindashboard/").status_code, 503)
+        self.assertEqual(self.client.post("/admindashboard/publication/retry", data={"csrf": csrf}).status_code, 503)
         self.trigger.assert_not_called()
 
     def test_export_rejects_retiring_or_unreachable_storage_instance(self):
@@ -371,32 +371,32 @@ class PublicationTests(unittest.TestCase):
         photo.seek(0)
         csrf = self.login()
         before = self.export()
-        response = self.client.post("/founder/edit/new", data={"csrf": csrf, "revision": 0,
+        response = self.client.post("/admindashboard/edit/new", data={"csrf": csrf, "revision": 0,
             "title": "Approved image update", "body": "Approved photograph text", "day": "2026-11-26",
             "photo": (photo, "approved.png"), "alt": "Approved photo description"})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(before == self.export(), "A draft photo appeared in the public artifact")
         item = response.location.rsplit("/", 1)[1]
-        self.client.post("/founder/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
+        self.client.post("/admindashboard/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"})
         files, _ = validate_artifact(self.export(), ORIGIN)
         self.assertIn(b'data:image/jpeg;base64,', files["stories.html"])
         self.assertIn(b'Approved photo description', files["index.html"])
 
     def test_founder_password_failures_logout_and_private_previews(self):
-        self.client.get("/founder/login")
-        with self.client.session_transaction(path="/founder/") as session:
+        self.client.get("/admindashboard/login")
+        with self.client.session_transaction(path="/admindashboard/") as session:
             csrf = session["csrf"]
-        response = self.client.post("/founder/login", data={"csrf": csrf, "password": "wrong"})
+        response = self.client.post("/admindashboard/login", data={"csrf": csrf, "password": "wrong"})
         self.assertEqual(response.status_code, 401)
         csrf = self.login()
         item = self.draft(csrf)
-        private = self.client.get("/founder/preview/" + item)
+        private = self.client.get("/admindashboard/preview/" + item)
         self.assertIn(b"PRIVATE DRAFT SENTINEL", private.data)
         self.assertEqual(private.headers["Cache-Control"], "no-store")
         self.assertEqual(private.headers["X-Robots-Tag"], "noindex, nofollow")
-        self.client.post("/founder/logout", data={"csrf": csrf})
-        self.assertEqual(self.client.get("/founder/preview/" + item).status_code, 302)
-        self.assertEqual(self.client.post("/founder/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"}).status_code, 403)
+        self.client.post("/admindashboard/logout", data={"csrf": csrf})
+        self.assertEqual(self.client.get("/admindashboard/preview/" + item).status_code, 302)
+        self.assertEqual(self.client.post("/admindashboard/status/" + item, data={"csrf": csrf, "revision": 1, "action": "publish"}).status_code, 403)
 
     def test_configured_secret_in_public_file_blocks_export(self):
         (self.public / "about.html").write_text(TOKEN, encoding="utf-8")

@@ -3,7 +3,7 @@
 ## Current deployment — 27 November 2026
 
 - [Public static website](https://beheard-public.onrender.com/)
-- [Admin dashboard](https://beheard-zimbabwe.onrender.com/founder/)
+- [Admin dashboard](https://beheard-zimbabwe.onrender.com/admindashboard/)
 - Public pages on the former address redirect to the static site.
 - Public static hosting stays available independently of Flask inactivity. The free admin service can sleep.
 - Supabase holds revision-checked durable snapshots of pages, the private database, drafts and credentials.
@@ -96,7 +96,7 @@ python publisher.py setup
 python publisher.py serve
 ```
 
-Open <http://127.0.0.1:8767/founder/> on this computer. If the editor is already running, just run the setup command. Re-running setup changes the password and invalidates existing signed-in sessions. Local operating-system access to the project and its private files is administrative access.
+Open <http://127.0.0.1:8767/admindashboard/> on this computer. If the editor is already running, just run the setup command. Re-running setup changes the password and invalidates existing signed-in sessions. Local operating-system access to the project and its private files is administrative access.
 
 Choose **Create an update**, enter the title, date and text, and optionally add an approved photograph and description. **Save draft and preview** keeps the changes private. **Publish update** places that revision in News and Events. Later edits stay private until published. **Take down** removes the public version and retains the draft.
 
@@ -156,7 +156,7 @@ flowchart TD
 | File or folder | Responsibility |
 | --- | --- |
 | publisher.py | Founder login, sessions, news workflow, page editing and publishing |
-| templates/founder.html | News dashboard and sign-in |
+| templates/admindashboard.html | News dashboard and sign-in |
 | templates/pages.html | Page text and photograph editing |
 | templates/articles.html | Escaped public news markup |
 | dist/ | Public website files for static hosting |
@@ -218,7 +218,7 @@ The repository includes render.yaml and wsgi.py for one paid Python web service 
 2. In Render, create a Blueprint from that repository and review render.yaml.
 3. Deploy after approving the service and disk cost.
 4. In the Render service Shell, run python publisher.py setup. The founder enters a new password privately.
-5. Open the service URL and /founder/. Check /healthz, public pages, sign-in and publication.
+5. Open the service URL and /admindashboard/. Check /healthz, public pages, sign-in and publication.
 
 BEHEARD_DATA_DIR places private credentials and SQLite in /var/data/beheard/private and public editable HTML in /var/data/beheard/public. Only the public subdirectory is served. Code redeploys refresh scripts and styles; previously edited HTML is retained. Deliberate HTML layout changes require a migration or a backed-up manual merge into the persistent pages.
 
@@ -248,7 +248,7 @@ The Supabase state table has row-level security. Its API requires both the publi
 
 ### Hosted configuration verified on 26 November 2026
 
-The live Render service now uses free Supabase project zervutwgwjxgranjcqyd for durable editor state. This supersedes the earlier temporary-storage limitation. The existing local founder account was provisioned privately on the host. Sign in at https://beheard-zimbabwe.onrender.com/founder/ using the existing founder password.
+The live Render service now uses free Supabase project zervutwgwjxgranjcqyd for durable editor state. This supersedes the earlier temporary-storage limitation. The existing local founder account was provisioned privately on the host. Sign in at https://beheard-zimbabwe.onrender.com/admindashboard/ using the existing founder password.
 
 The deployment reached live status. The health endpoint returned ok. Supabase contains snapshots of all seven pages, and a subsequent deployment restored that state. Anonymous access without the server token returned no rows; the Supabase security advisor reported no findings. Snapshot save/restart recovery was tested on isolated copies. The browser sign-in form is active; a successful interactive password submission remains for the founder to verify.
 
@@ -349,17 +349,17 @@ The footer credits Nash Tech and links to WhatsApp at +263 77 344 7241. Its loca
 
 The official BeHeard logo supplies favicon.ico and the Apple touch icon, added to all public pages during shared rendering.
 
-Forms are available at the Flask host /forms/enquiry, /forms/volunteer and /forms/counselling. The protected inbox is /founder/submissions. Consent is recorded with notice version 2026-11-27. Durable save precedes confirmation. Reference-only notifications use Resend HTTPS, configured with BEHEARD_MAIL_API_KEY and BEHEARD_MAIL_FROM for a verified sender, with delivery to info@beheardzim.org. Neither the NGO mailbox nor sending account exists yet, so email activation/testing and newsletter setup are blocked. The requested future test recipient is nyashamsamson@gmail.com. Configure secrets only in Render. Pending notification retries are available in the inbox.
+Forms are available at the Flask host /forms/enquiry, /forms/volunteer and /forms/counselling. The protected inbox is /admindashboard/submissions. Consent is recorded with notice version 2026-11-27. Durable save precedes confirmation. Reference-only notifications use Resend HTTPS, configured with BEHEARD_MAIL_API_KEY and BEHEARD_MAIL_FROM for a verified sender, with delivery to info@beheardzim.org. Neither the NGO mailbox nor sending account exists yet, so email activation/testing and newsletter setup are blocked. The requested future test recipient is nyashamsamson@gmail.com. Configure secrets only in Render. Pending notification retries are available in the inbox.
 
 Form origin validation accounts for Render HTTPS termination while preserving rejection of foreign browser origins. Regression tests cover HTTPS-origin submissions behind the proxy.
 
 The signed-in founder navigation includes Form submissions, opening the private inbox for all three form types.
 
-Signed-in admins can change their password at /founder/password with current-password verification and confirmation. Successful durable saves invalidate all admin sessions. Environment-reset generations are tracked separately so subsequent restarts preserve a password changed through the dashboard. Admin templates include the BeHeard favicon and organised navigation.
+Signed-in admins can change their password at /admindashboard/password with current-password verification and confirmation. Successful durable saves invalidate all admin sessions. Environment-reset generations are tracked separately so subsequent restarts preserve a password changed through the dashboard. Admin templates include the BeHeard favicon and organised navigation.
 
-Admins can move submissions to Deleted submissions and restore them. Records remain in private durable snapshots. Password fields include show/hide controls. Owner recovery at /founder/recover requires the private owner code whose hash is in BEHEARD_OWNER_RECOVERY_HASH. Store the code in the owner password manager and rotate it through Render if compromised. Recovery invalidates admin sessions and persists through the existing durable-save workflow.
+Admins can move submissions to Deleted submissions and restore them. Records remain in private durable snapshots. Password fields include show/hide controls. Owner recovery at /admindashboard/recover requires the private owner code whose hash is in BEHEARD_OWNER_RECOVERY_HASH. Store the code in the owner password manager and rotate it through Render if compromised. Recovery invalidates admin sessions and persists through the existing durable-save workflow.
 
-The page editor previews saved pages through authenticated /founder/page-preview/<name> routes. These allow same-origin framing for the editor; other admin pages retain frame denial. Public-host redirects no longer interfere with editor previews.
+The page editor previews saved pages through authenticated /admindashboard/page-preview/<name> routes. These allow same-origin framing for the editor; other admin pages retain frame denial. Public-host redirects no longer interfere with editor previews.
 
 Gallery page editing provides a category selector for uploaded photographs. New images append to their chosen category and persist inside the existing durable HTML snapshots. Existing gallery assets are preserved.
 

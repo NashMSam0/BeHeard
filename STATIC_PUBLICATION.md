@@ -120,7 +120,7 @@ variable collection.
    `BEHEARD_STATIC_STAGING` off, and remove the static `X-Robots-Tag: noindex`
    header. Rebuild and verify canonical tags and the sitemap before switching DNS.
    Add founder redirects to the admin origin if the new public domain needs to
-   accept `/founder/` bookmarks. Keep the founder's admin URL recorded separately.
+   accept `/admindashboard/` bookmarks. Keep the founder's admin URL recorded separately.
 9. Retain the old Flask service and its durable state for rollback. Enable
    `BEHEARD_ADMIN_ONLY=1` only after traffic has moved; its previews continue to
    function but responses are noindex. The former `beheard-zimbabwe.onrender.com`

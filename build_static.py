@@ -64,7 +64,7 @@ def validate_artifact(body, origin):
         if page.count('<link rel="canonical" href="' + canonical + '">') != 1:
             raise ValueError("Export canonical origin differs from configuration")
         # No application backend calls belong in the static document.
-        if re.search(r'(?:src|href|action)=[\"\']/(?:founder/|publication/|\.beheard/)', page, re.I):
+        if re.search(r'(?:src|href|action)=[\"\']/(?:founder/|admindashboard/|publication/|\.beheard/)', page, re.I):
             raise ValueError("Export references a private route")
     return files, digest
 

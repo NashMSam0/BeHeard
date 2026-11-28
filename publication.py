@@ -111,7 +111,7 @@ def configure_publication(app, connect, cloud):
             "X-Content-Type-Options": "nosniff", "X-BeHeard-Release": publication.digest,
         })
 
-    @app.post("/founder/publication/retry")
+    @app.post("/admindashboard/publication/retry")
     def retry_publication():
         publication.notify(force=True)
         return redirect(url_for("dashboard"))

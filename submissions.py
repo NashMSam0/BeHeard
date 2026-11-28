@@ -111,27 +111,27 @@ def configure_submissions(app, connect, cloud):
                 return render_template("public_form.html", title=KINDS[kind], kind=kind, reference=identifier)
         return render_template("public_form.html", title=KINDS[kind], kind=kind, error=error, token=signer.dumps(kind)), 400 if error else 200
 
-    @app.get("/founder/submissions")
+    @app.get("/admindashboard/submissions")
     def submissions_inbox():
         with closing(connect(app)) as db:
             rows = db.execute("SELECT * FROM submissions WHERE deleted=? ORDER BY created DESC LIMIT 500", (1 if request.args.get("trash") == "1" else 0,)).fetchall()
         return render_template("submissions.html", rows=rows, kinds=KINDS, trash=request.args.get("trash") == "1")
 
-    @app.post("/founder/submissions/<identifier>/delete")
+    @app.post("/admindashboard/submissions/<identifier>/delete")
     def delete_submission(identifier):
         with closing(connect(app)) as db, db:
             db.execute("UPDATE submissions SET deleted=1 WHERE id=?", (identifier,))
         from flask import redirect
-        return redirect("/founder/submissions")
+        return redirect("/admindashboard/submissions")
 
-    @app.post("/founder/submissions/<identifier>/restore")
+    @app.post("/admindashboard/submissions/<identifier>/restore")
     def restore_submission(identifier):
         with closing(connect(app)) as db, db:
             db.execute("UPDATE submissions SET deleted=0 WHERE id=?", (identifier,))
         from flask import redirect
-        return redirect("/founder/submissions?trash=1")
+        return redirect("/admindashboard/submissions?trash=1")
 
-    @app.post("/founder/submissions/retry")
+    @app.post("/admindashboard/submissions/retry")
     def retry_form_mail():
         with closing(connect(app)) as db:
             pending = db.execute("SELECT id FROM submissions WHERE notified=0 AND deleted=0 LIMIT 20").fetchall()
@@ -140,7 +140,7 @@ def configure_submissions(app, connect, cloud):
                 with closing(connect(app)) as db, db:
                     db.execute("UPDATE submissions SET notified=1 WHERE id=?", (row["id"],))
         from flask import redirect
-        return redirect("/founder/submissions")
+        return redirect("/admindashboard/submissions")
 
     @app.after_request
     def form_privacy(response):

@@ -71,7 +71,7 @@ def configure_seo(app):
 
     @app.after_request
     def metadata(response):
-        if request.path.startswith(("/founder", "/publication")) or request.path == "/healthz" or app.config.get("ADMIN_ONLY"):
+        if request.path.startswith(("/admindashboard", "/publication")) or request.path == "/healthz" or app.config.get("ADMIN_ONLY"):
             response.headers["X-Robots-Tag"] = "noindex, nofollow"
         if request.path.lstrip("/") not in PAGES or response.status_code != 200 or response.mimetype != "text/html":
             return response

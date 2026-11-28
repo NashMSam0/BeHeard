@@ -161,7 +161,7 @@ def create_app(private=None, public=None):
 
                       TRUSTED_HOSTS=["localhost", "127.0.0.1"], SESSION_COOKIE_NAME="beheard_founder",
 
-                      SESSION_COOKIE_PATH="/founder", SESSION_COOKIE_SAMESITE="Strict",
+                      SESSION_COOKIE_PATH="/admindashboard", SESSION_COOKIE_SAMESITE="Strict",
 
                       PERMANENT_SESSION_LIFETIME=timedelta(hours=4))
 
@@ -259,7 +259,7 @@ def create_app(private=None, public=None):
 
     @app.after_request
     def persist_changes(response):
-        if cloud and request.method == "POST" and request.path.startswith("/founder"):
+        if cloud and request.method == "POST" and request.path.startswith("/admindashboard"):
             if response.status_code < 400 or (request.endpoint == "login" and response.status_code in (401, 429)):
                 try:
                     artifact = publication.prepare()
@@ -276,9 +276,9 @@ def create_app(private=None, public=None):
                         app.config["STATE_UNCERTAIN"] = True
                         app.logger.warning("Cloud restore unavailable; restart required")
                     return app.response_class("We could not confirm the save. Reopen the editor and check your content before retrying.", status=503)
-        elif not cloud and request.method == "POST" and request.path.startswith("/founder") and response.status_code < 400:
+        elif not cloud and request.method == "POST" and request.path.startswith("/admindashboard") and response.status_code < 400:
             publication.confirm(publication.prepare())
-        if (request.path.startswith("/founder") and response.status_code < 400
+        if (request.path.startswith("/admindashboard") and response.status_code < 400
                 and (request.method == "POST" or request.endpoint == "dashboard")):
             publication.notify()
         if request.path.endswith(".html") or request.path == "/":
@@ -288,6 +288,14 @@ def create_app(private=None, public=None):
     @app.errorhandler(413)
     def upload_too_large(error):
         return render_template("upload_error.html"), 413
+
+    @app.before_request
+    def legacy_admin_redirect():
+        if request.path == "/founder" or request.path.startswith("/founder/"):
+            target = "/admindashboard" + request.path[len("/founder"):]
+            if request.query_string:
+                target += "?" + request.query_string.decode("ascii", errors="ignore")
+            return redirect(target, code=307)
 
     @app.before_request
 
@@ -302,7 +310,7 @@ def create_app(private=None, public=None):
                 from public_views import render_public
                 return app.response_class(render_public(public, request.view_args["filename"]), mimetype="text/html")
 
-        if not request.path.startswith("/founder"):
+        if not request.path.startswith("/admindashboard"):
 
             return
 
@@ -339,7 +347,7 @@ def create_app(private=None, public=None):
 
     def headers(response):
 
-        if request.path.startswith("/founder"):
+        if request.path.startswith("/admindashboard"):
 
             response.headers.update({"Cache-Control":"no-store", "X-Frame-Options":"DENY",
 
@@ -366,7 +374,7 @@ def create_app(private=None, public=None):
         from public_views import render_public
         return render_public(public, "index.html")
 
-    @app.get("/founder/page-preview/<name>")
+    @app.get("/admindashboard/page-preview/<name>")
     def page_preview(name):
         from public_manifest import PUBLIC_PAGES
         from public_views import render_public
@@ -381,7 +389,7 @@ def create_app(private=None, public=None):
 
 
 
-    @app.route("/founder/login", methods=["GET", "POST"])
+    @app.route("/admindashboard/login", methods=["GET", "POST"])
 
     def login():
 
@@ -421,7 +429,7 @@ def create_app(private=None, public=None):
 
 
 
-    @app.route("/founder/recover", methods=["GET", "POST"])
+    @app.route("/admindashboard/recover", methods=["GET", "POST"])
     def recover_password():
         session.setdefault("csrf", secrets.token_hex(24))
         error = None
@@ -450,7 +458,7 @@ def create_app(private=None, public=None):
                 return redirect(url_for("login", password_changed="1"))
         return render_template("recovery.html", error=error), 400 if error else 200
 
-    @app.route("/founder/password", methods=["GET", "POST"])
+    @app.route("/admindashboard/password", methods=["GET", "POST"])
     def change_password():
         error = None
         if request.method == "POST":
@@ -477,7 +485,7 @@ def create_app(private=None, public=None):
                 return redirect(url_for("login", password_changed="1"))
         return render_template("password.html", error=error), 400 if error else 200
 
-    @app.post("/founder/logout")
+    @app.post("/admindashboard/logout")
 
     def logout():
 
@@ -487,7 +495,7 @@ def create_app(private=None, public=None):
 
 
 
-    @app.get("/founder/")
+    @app.get("/admindashboard/")
 
     def dashboard():
 
@@ -501,7 +509,7 @@ def create_app(private=None, public=None):
 
 
 
-    @app.route("/founder/edit/<item>", methods=["GET","POST"])
+    @app.route("/admindashboard/edit/<item>", methods=["GET","POST"])
 
     def edit(item):
 
@@ -563,7 +571,7 @@ def create_app(private=None, public=None):
 
 
 
-    @app.get("/founder/preview/<item>")
+    @app.get("/admindashboard/preview/<item>")
 
     def preview(item):
 
@@ -581,7 +589,7 @@ def create_app(private=None, public=None):
 
 
 
-    @app.post("/founder/status/<item>")
+    @app.post("/admindashboard/status/<item>")
 
     def status(item):
 
@@ -619,7 +627,7 @@ def create_app(private=None, public=None):
 
 
 
-    @app.route("/founder/pages", methods=["GET", "POST"])
+    @app.route("/admindashboard/pages", methods=["GET", "POST"])
 
     def pages():
 
@@ -825,7 +833,7 @@ if __name__ == "__main__":
 
             db.execute("DELETE FROM failures")
 
-        print(f"Founder password set. Open http://127.0.0.1:{args.port}/founder/")
+        print(f"Founder password set. Open http://127.0.0.1:{args.port}/admindashboard/")
 
     else:
 
