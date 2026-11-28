@@ -286,6 +286,49 @@ document.querySelectorAll('.education-categories').forEach((education, groupInde
   education.classList.add('education-tabs');
   select(0);
 });
+const heroPhotos = document.querySelector('.hero-photos');
+if (heroPhotos && heroPhotos.children.length > 1) {
+  const photos = Array.from(heroPhotos.children);
+  const control = document.querySelector('.hero-photo-toggle');
+  const preference = matchMedia('(prefers-reduced-motion: reduce)');
+  let current = 0;
+  let paused = preference.matches;
+  let timer;
+
+  function showPhoto(index) {
+    photos[current].classList.remove('is-current');
+    photos[current].setAttribute('aria-hidden', 'true');
+    current = index;
+    photos[current].classList.add('is-current');
+    photos[current].removeAttribute('aria-hidden');
+  }
+
+  function updatePlayback() {
+    clearInterval(timer);
+    control.textContent = paused ? 'Play photographs' : 'Pause photographs';
+    if (paused || document.hidden) return;
+    timer = setInterval(() => {
+      const next = (current + 1) % photos.length;
+      if (photos[next].naturalWidth) showPhoto(next);
+    }, 1500);
+  }
+
+  photos.forEach(photo => photo.setAttribute('aria-hidden', 'true'));
+  showPhoto(0);
+  heroPhotos.classList.add('rotating');
+  control.hidden = false;
+  control.addEventListener('click', () => {
+    paused = !paused;
+    updatePlayback();
+  });
+  preference.addEventListener('change', () => {
+    paused = preference.matches;
+    updatePlayback();
+  });
+  document.addEventListener('visibilitychange', updatePlayback);
+  updatePlayback();
+}
+
 document.querySelectorAll('.home-slideshow').forEach(slideshow => {
   const track = slideshow.querySelector('.slide-track');
   const toggle = slideshow.querySelector('.slideshow-toggle');

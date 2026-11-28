@@ -283,6 +283,46 @@ h2 { line-height:1.14; }
     linear-gradient(90deg, #14243b 0%, #14243b 38%, transparent 66%) center / cover no-repeat,
     var(--hero-photo) right 65% / 62% auto no-repeat #14243b;
 }
+/* The photo layer changes independently of the headline and its navy backdrop. */
+.lead.home:has(.hero-photos)::before { content: none; }
+.hero-photos {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 0 38%;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 45%);
+}
+.hero-photos img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 65%;
+  opacity: 0;
+  transition: opacity 550ms ease-in-out;
+}
+.hero-photos img[src$="home-family-support.jpg"] { object-position: center 38%; }
+.hero-photos img[src$="home-education-support.jpg"] { object-position: center 45%; }
+.hero-photos:not(.rotating) img:first-child,
+.hero-photos img.is-current { opacity: 1; }
+.hero-photo-toggle {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--header-height) + 12px);
+  right: max(16px, 3vw);
+  padding: 8px 14px;
+  border: 1px solid rgb(255 255 255 / 70%);
+  border-radius: 24px;
+  background: #14243b;
+  color: white;
+  font: inherit;
+  font-size: .875rem;
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-photos img { transition: none; }
+}
 .home .home-grid { grid-template-columns:minmax(0, 53%) minmax(0, 1fr); gap:24px; }
 .home .home-grid > * { grid-column:1; }
 .home .kicker { color:#e1ebf5; }
@@ -339,6 +379,11 @@ h2 { line-height:1.14; }
     inset:var(--header-height) 0 auto;
     height:min(76vw, 370px);
     background:linear-gradient(180deg, transparent 60%, #14243b), var(--hero-photo) center 61% / cover no-repeat;
+  }
+  .hero-photos {
+    inset: var(--header-height) 0 auto;
+    height: min(76vw, 370px);
+    mask-image: linear-gradient(to bottom, black 60%, transparent);
   }
   .home .home-grid { grid-template-columns:minmax(0, 1fr); }
   .education-tabs, .education-panel { grid-template-columns:minmax(0, 1fr); }
@@ -466,5 +511,4 @@ body[data-page=home] main>section:first-child{overflow:clip}
 .contact-form-actions .inline-link:focus-visible{outline:3px solid currentColor;outline-offset:4px}
 @media(max-width:600px){.contact-form-actions{grid-template-columns:1fr;gap:12px}.contact-form-actions .inline-link{min-height:64px;padding:16px 20px}}
 
-body[data-page="home"] .slide-track img{object-fit:contain;height:clamp(300px,48vw,580px)}
 .submission-actions{display:flex;flex-wrap:wrap;gap:16px;margin-block:20px}.submission-delete{background:#14263e;color:#fff;min-width:180px}.submission-inbox .admin-nav{display:flex;gap:24px;margin-block:24px}

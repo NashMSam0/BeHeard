@@ -36,11 +36,8 @@ def _render_public(public, name):
         return document
     document = re.sub(r'<!-- home slides -->.*?<!-- end home slides -->|<figure class="page-photo">.*?</figure>',
                       '', document, flags=re.S)
-    slideshow = ('<section class="home-slideshow" aria-label="BeHeard photographs" data-interval="1500">'
-                 '<div class="slide-track"><img src="/home-family-support.jpg" alt="Ashley with children" fetchpriority="high">'
-                 '<img src="/home-education-support.jpg" alt="Children with school supplies"></div>'
-                 '<button type="button" class="slideshow-toggle">Pause photographs</button></section>')
-    document = document.replace('<main id="main" tabindex="-1">', '<main id="main" tabindex="-1">' + slideshow, 1)
+    hero = '<section class="lead home">'
+    document = document.replace(hero, hero + render_template("hero_photos.html"), 1)
     stories = (public / "stories.html").read_text(encoding="utf-8")
     heading = stories.find('<h2 id="news">')
     if heading == -1:
