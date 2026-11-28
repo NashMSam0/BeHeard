@@ -24,6 +24,13 @@ def render_public(public, name):
             if match[1] in uploads and match[3].startswith("data:image/jpeg;base64,"):
                 uploads[match[1]].append((html.unescape(match[3]), html.unescape(match[2])))
         document = re.sub(pattern, "", document)
+        if uploads["stationery"]:
+            photos = "".join('<a href="' + src + '"><img src="' + src + '" alt="' + html.escape(alt, quote=True) + '" loading="lazy"></a>' for src, alt in uploads["stationery"])
+            document, count = re.subn(r'(<h2>Stationary</h2>\s*<div class="gallery-grid">.*?)(</div>)',
+                lambda match: match[1] + photos + match[2], document, count=1, flags=re.S)
+            if count:
+                uploads["stationery"] = []
+
         return document.replace('</main>', render_template('gallery_groups.html', uploads=uploads) + '\n</main>', 1)
     if name != "index.html":
         return document
