@@ -1,4 +1,5 @@
 import re
+from contextlib import closing
 from pathlib import Path
 import shutil
 import tempfile
@@ -44,6 +45,24 @@ class SubmissionTests(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(self.client.post("/forms/enquiry", data=data,
                 headers={"Origin": "https://untrusted.example"}).status_code, 403)
+
+    def test_admin_can_delete_and_restore_submission(self):
+        response = self.client.get("/forms/enquiry")
+        token = re.search(rb'name="token" value="([^"]+)"', response.data)[1].decode()
+        self.client.post("/forms/enquiry", data=dict(token=token, name="Delete test", email="test@example.org", consent="yes"))
+        with closing(connect(self.app)) as db, db:
+            identifier = db.execute("SELECT id FROM submissions").fetchone()[0]
+            db.execute("INSERT OR REPLACE INTO settings(key,value) VALUES ('generation','delete-test')")
+        with self.client.session_transaction(path="/admindashboard/") as state:
+            state["account"] = "delete-test"
+            state["csrf"] = "test-csrf"
+        endpoint = "/admindashboard/submissions/" + identifier
+        self.assertEqual(self.client.post(endpoint + "/delete").status_code, 403)
+        self.assertEqual(self.client.post(endpoint + "/delete", data={"csrf":"test-csrf"}).status_code, 302)
+        self.assertNotIn(b"Delete test", self.client.get("/admindashboard/submissions").data)
+        self.assertIn(b"Delete test", self.client.get("/admindashboard/submissions?trash=1").data)
+        self.assertEqual(self.client.post(endpoint + "/restore", data={"csrf":"test-csrf"}).status_code, 302)
+        self.assertIn(b"Delete test", self.client.get("/admindashboard/submissions").data)
 
     def test_invalid_token_rejected(self):
         self.assertEqual(self.client.post("/forms/enquiry", data={"token": "bad"}).status_code, 403)

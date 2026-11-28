@@ -465,3 +465,6 @@ body[data-page=home] main>section:first-child{overflow:clip}
 .contact-form-actions .inline-link:hover{background:var(--sage)}
 .contact-form-actions .inline-link:focus-visible{outline:3px solid currentColor;outline-offset:4px}
 @media(max-width:600px){.contact-form-actions{grid-template-columns:1fr;gap:12px}.contact-form-actions .inline-link{min-height:64px;padding:16px 20px}}
+
+body[data-page="home"] .slide-track img{object-fit:contain;height:clamp(300px,48vw,580px)}
+.submission-actions{display:flex;flex-wrap:wrap;gap:16px;margin-block:20px}.submission-delete{background:#14263e;color:#fff;min-width:180px}.submission-inbox .admin-nav{display:flex;gap:24px;margin-block:24px}

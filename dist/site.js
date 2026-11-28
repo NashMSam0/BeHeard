@@ -326,7 +326,7 @@ document.querySelectorAll('.home-slideshow').forEach(slideshow => {
   setInterval(() => {
     if (paused || document.hidden || slideshow.matches(':hover') || slideshow.contains(document.activeElement)) return;
     move(1);
-  }, 5500);
+  }, Number(slideshow.dataset.interval) || 5500);
 });
 
 const donationForm = document.getElementById('donation-chooser');

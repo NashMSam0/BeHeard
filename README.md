@@ -367,3 +367,5 @@ Gallery page editing provides a category selector for uploaded photographs. New 
 All general page photograph uploads require a section destination. A new photo replaces only that section’s uploaded image. Gallery uploads retain category selection; slideshow and news uploads retain their explicitly labelled destinations. Existing photographs remain in place.
 
 Page editors list current pictures with per-photo deletion checkboxes. Deletion suppresses the selected image on that page in both Flask previews and static exports. Original files and historical snapshots are retained.
+
+Homepage photographs rotate every 1.5 seconds, with a pause control and reduced-motion support. Form submissions can be moved to Deleted submissions and restored from the admin inbox.
