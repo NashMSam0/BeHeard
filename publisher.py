@@ -706,9 +706,15 @@ def create_app(private=None, public=None):
 
                 image = '<figure class="page-photo"><img alt="'+html.escape(alt, quote=True)+'" src="data:image/jpeg;base64,'+photo+'"></figure>'
 
-                source = re.sub(r'<figure class="page-photo">.*?</figure>', '', source, flags=re.S)
-
-                source = source.replace('</main>', image+'</main>')
+                if name == "gallery.html":
+                    from gallery_categories import CATEGORIES
+                    category = request.form.get("gallery_category", "")
+                    if category not in CATEGORIES:
+                        abort(400, "Choose a gallery category.")
+                    image = '<figure data-gallery-category="' + category + '"><img alt="' + html.escape(alt, quote=True) + '" src="data:image/jpeg;base64,' + photo + '"></figure>'
+                else:
+                    source = re.sub(r'<figure class="page-photo">.*?</figure>', '', source, flags=re.S)
+                source = source.replace('</main>', image + '</main>')
 
             if request.form.get("remove"):
 
@@ -770,7 +776,8 @@ def create_app(private=None, public=None):
 
         import hashlib
 
-        return render_template("pages.html", names=names, name=name,
+        from gallery_categories import CATEGORIES
+        return render_template("pages.html", names=names, name=name, gallery_categories=CATEGORIES,
 
             fields=fields, current_photo=current_photo, slide_previews=slide_previews,
 

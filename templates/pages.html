@@ -15,7 +15,7 @@
 
 {% for field in fields %}<label>{{ field.label }}<textarea name="text_{{ loop.index0 }}" required rows="4">{{ field.text }}</textarea></label>{% endfor %}
 
-<fieldset><legend>Page photograph</legend>{% if current_photo %}<img class="current-photo" src="{{ current_photo }}" alt="Current page photograph">{% endif %}<label>Add or replace photograph<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
+<fieldset><legend>{{ "Add gallery photograph" if name == "gallery.html" else "Page photograph" }}</legend>{% if current_photo %}<img class="current-photo" src="{{ current_photo }}" alt="Current page photograph">{% endif %}{% if name == "gallery.html" %}<label>Category<select name="gallery_category" required>{% for key, label in gallery_categories.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}</select></label>{% endif %}<label>{{ "Add photograph" if name == "gallery.html" else "Add or replace photograph" }}<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
 
 <label>Describe the photograph<input name="alt"></label><label><input type="checkbox" name="remove">Remove page photograph</label></fieldset>
 

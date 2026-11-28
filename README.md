@@ -360,3 +360,5 @@ Signed-in admins can change their password at /founder/password with current-pas
 Admins can move submissions to Deleted submissions and restore them. Records remain in private durable snapshots. Password fields include show/hide controls. Owner recovery at /founder/recover requires the private owner code whose hash is in BEHEARD_OWNER_RECOVERY_HASH. Store the code in the owner password manager and rotate it through Render if compromised. Recovery invalidates admin sessions and persists through the existing durable-save workflow.
 
 The page editor previews saved pages through authenticated /founder/page-preview/<name> routes. These allow same-origin framing for the editor; other admin pages retain frame denial. Public-host redirects no longer interfere with editor previews.
+
+Gallery page editing provides a category selector for uploaded photographs. New images append to their chosen category and persist inside the existing durable HTML snapshots. Existing gallery assets are preserved.

@@ -6,7 +6,9 @@
   ('Community Outreach', [('/school-visit.jpg', 'Students in a classroom during a school visit'), ('/family-donation.jpg', 'A family receiving a donation at the school'), ('/home-community.jpg', 'A group together outdoors')]),
   ('Children’s Christmas Party', [('/christmas-outreach.jpg', 'Christmas outreach poster'), ('/christmas-programme.jpg', 'Children’s Christmas Party timetable')])
 ] %}
+{% set keys = ['birthdays', 'uniforms', 'empowerment', 'families', 'outreach', 'christmas'] %}
 {% for heading, photos in groups %}
+{% set photos = photos + (uploads|default({})).get(keys[loop.index0], []) %}
 <section class="block"><div class="wrap">
   <h2>{{ heading }}</h2>
   <div class="gallery-grid">
@@ -21,3 +23,9 @@
 {% for src, caption in [('/sewing-finished-work.mp4','Showing her finished sewing work'),('/sewing-at-machine.mp4','Sewing at her machine'),('/crushing-cans.mp4','Crushing cans before receiving the sewing machine'),('/former-home-exterior.mp4','The family’s former home'),('/former-home-room.mp4','The former sleeping area'),('/former-home-bathroom.mp4','The former bathroom')] %}
 <figure><video controls playsinline preload="none" aria-label="{{ caption }}" src="{{ src }}"></video><figcaption>{{ caption }}</figcaption></figure>
 {% endfor %}</div></div></section>
+
+{% if (uploads|default({})).get('stationery') %}
+<section class="block"><div class="wrap"><h2>Stationary</h2><div class="gallery-grid">
+{% for src, alt in uploads.stationery %}<a href="{{ src }}"><img src="{{ src }}" alt="{{ alt }}" loading="lazy"></a>{% endfor %}
+</div></div></section>
+{% endif %}

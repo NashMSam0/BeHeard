@@ -16,7 +16,15 @@ def render_public(public, name):
     if name == "privacy.html":
         return document.replace("</main>", render_template("privacy_details.html") + "\n</main>", 1)
     if name == "gallery.html":
-        return document.replace('</main>', render_template('gallery_groups.html') + '\n</main>', 1)
+        from gallery_categories import CATEGORIES
+        import html
+        uploads = {key: [] for key in CATEGORIES}
+        pattern = r'<figure data-gallery-category="([^"]+)"><img alt="([^"]*)" src="([^"]+)"></figure>'
+        for match in re.finditer(pattern, document):
+            if match[1] in uploads and match[3].startswith("data:image/jpeg;base64,"):
+                uploads[match[1]].append((html.unescape(match[3]), html.unescape(match[2])))
+        document = re.sub(pattern, "", document)
+        return document.replace('</main>', render_template('gallery_groups.html', uploads=uploads) + '\n</main>', 1)
     if name != "index.html":
         return document
     document = re.sub(r'<!-- home slides -->.*?<!-- end home slides -->|<figure class="page-photo">.*?</figure>',
